@@ -3,102 +3,79 @@ package csv;
 import model.Conge;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class CongeCSV {
-    private static final String FILE_PATH = "conges.csv";
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final ExecutorService executor = Executors.newFixedThreadPool(3);
-    private final Object fileLock = new Object();
+    private static final String CSV_SEPARATOR = ";";
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final ExecutorService executor = Executors.newFixedThreadPool(3);
+    private static final Object exportLock = new Object();
+    private static final Object importLock = new Object();
 
-    public void save(Conge conge) {
-        executor.submit(() -> {
-            synchronized (fileLock) {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-                    writer.write(formatCongeLine(conge) + "\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    public List<Conge> load() throws IOException {
-        List<Conge> loadedConges = new ArrayList<>();
-        File file = new File(FILE_PATH);
-        
-        if (!file.exists()) {
-            return loadedConges;
-        }
-
-        synchronized (fileLock) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-                String line;
-                while ((line = reader.readLine()) != null && !line.trim().isEmpty()) {
-                    Conge conge = parseCongeLine(line);
-                    if (conge != null) {
-                        loadedConges.add(conge);
-                    }
-                }
-            }
-        }
-        return loadedConges;
-    }
-
-    public void saveAll(List<Conge> conges) {
-        executor.submit(() -> {
-            synchronized (fileLock) {
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
+    public static Future<Void> exportToCsv(List<Conge> conges, String filePath) {
+        return executor.submit(() -> {
+            synchronized (exportLock) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                    writer.write("ID" + CSV_SEPARATOR + "ID Employé" + CSV_SEPARATOR + "Type" + CSV_SEPARATOR 
+                               + "Date Début" + CSV_SEPARATOR + "Date Fin" + CSV_SEPARATOR 
+                               + "Statut" + CSV_SEPARATOR + "Motif\n");
+                    
                     for (Conge conge : conges) {
-                        writer.write(formatCongeLine(conge) + "\n");
+                        writer.write(escapeCsv(String.valueOf(conge.getId())) + CSV_SEPARATOR);
+                        writer.write(escapeCsv(String.valueOf(conge.getEmployeeId())) + CSV_SEPARATOR);
+                        writer.write(escapeCsv(conge.getType().name()) + CSV_SEPARATOR);
+                        writer.write(escapeCsv(DATE_FORMAT.format(conge.getDateDebut())) + CSV_SEPARATOR);
+                        writer.write(escapeCsv(DATE_FORMAT.format(conge.getDateFin())) + CSV_SEPARATOR);
+                        writer.write(escapeCsv(conge.getStatut().name()) + CSV_SEPARATOR);
+                        writer.write(escapeCsv(conge.getMotif() == null ? "" : conge.getMotif()) + "\n");
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new CsvExportException("Erreur lors de l'export CSV des congés: " + e.getMessage(), e);
+                }
+                return null;
+            }
+        });
+    }
+
+    public static Future<List<Conge>> importFromCsv(String filePath) {
+        return executor.submit(() -> {
+            synchronized (importLock) {
+                List<Conge> conges = new ArrayList<>();
+                try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+                    br.readLine(); // Skip header
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String[] data = line.split(CSV_SEPARATOR, -1);
+                        if (data.length >= 7) {
+                            Conge conge = new Conge();
+                            conge.setId(Integer.parseInt(data[0].trim()));
+                            conge.setEmployeeId(Integer.parseInt(data[1].trim()));
+                            conge.setType(Conge.TypeConge.valueOf(data[2].trim()));
+                            conge.setDateDebut(DATE_FORMAT.parse(data[3].trim()));
+                            conge.setDateFin(DATE_FORMAT.parse(data[4].trim()));
+                            conge.setStatut(Conge.StatutConge.valueOf(data[5].trim()));
+                            conge.setMotif(data[6].trim().isEmpty() ? null : data[6].trim());
+                            conges.add(conge);
+                        }
+                    }
+                    return conges;
+                } catch (Exception e) {
+                    throw new CsvImportException("Erreur lors de l'import CSV des congés: " + e.getMessage(), e);
                 }
             }
         });
     }
 
-    private String formatCongeLine(Conge conge) {
-        return String.format("%d;%d;%s;%s;%s;%s;%s",
-            conge.getId(),
-            conge.getEmployeeId(),
-            conge.getType(),
-            conge.getDateDebut() != null ? dateFormat.format(conge.getDateDebut()) : "",
-            conge.getDateFin() != null ? dateFormat.format(conge.getDateFin()) : "",
-            conge.getStatut() != null ? conge.getStatut() : "En attente",
-            conge.getMotif() != null ? conge.getMotif() : ""
-        );
+    private static String escapeCsv(String input) {
+        if (input == null) return "";
+        return "\"" + input.replace("\"", "\"\"") + "\"";
     }
 
-    private Conge parseCongeLine(String line) {
-        try {
-            String[] parts = line.split(";", -1);
-            if (parts.length >= 6) {
-                int id = Integer.parseInt(parts[0]);
-                int employeeId = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
-                String type = parts.length > 2 ? parts[2] : "";
-                
-                Date dateDebut = null;
-                Date dateFin = null;
-                
-                if (parts.length > 3 && !parts[3].isEmpty()) {
-                    dateDebut = dateFormat.parse(parts[3]);
-                }
-                if (parts.length > 4 && !parts[4].isEmpty()) {
-                    dateFin = dateFormat.parse(parts[4]);
-                }
-                
-                String statut = parts.length > 5 ? parts[5] : "En attente";
-                String motif = parts.length > 6 ? parts[6] : "";
-                
-                return new Conge(id, employeeId, type, dateDebut, dateFin, statut, motif);
-            }
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la lecture d'une ligne de congé: " + e.getMessage());
-        }
-        return null;
+    public static void shutdown() {
+        executor.shutdown();
     }
 }

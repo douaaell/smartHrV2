@@ -2,65 +2,58 @@ package controller;
 
 import model.Conge;
 import service.CongeService;
-import java.io.IOException;
+import service.CongeServiceImpl;
 import java.util.List;
 
 public class CongeController {
     private final CongeService congeService;
 
     public CongeController() {
-        this.congeService = new CongeService();
+        this.congeService = new CongeServiceImpl();
     }
 
-    public void demanderConge(Conge conge, int employeeId) throws IOException {
-        congeService.saveConge(conge, employeeId);
+    public Conge demanderConge(Conge conge) {
+        return congeService.saveConge(conge);
     }
 
-    public List<Conge> listerConges() throws IOException {
-        return congeService.loadConges();
+    public Conge obtenirConge(int id) {
+        return congeService.findCongeById(id)
+            .orElseThrow(() -> new RuntimeException("Congé non trouvé avec l'ID: " + id));
     }
 
-    public Conge obtenirConge(int id) throws IOException {
-        return congeService.findCongeById(id);
+    public List<Conge> listerTousLesConges() {
+        return congeService.findAllConges();
     }
 
-    public boolean supprimerConge(int id) throws IOException {
-        return congeService.deleteConge(id);
+    public List<Conge> listerCongesEmploye(int employeeId) {
+        return congeService.findCongesByEmployeeId(employeeId);
     }
 
-    public List<Conge> listerCongesParStatut(String statut) throws IOException {
-        return congeService.getCongesByStatut(statut);
+    public List<Conge> listerCongesParStatut(String statut) {
+        return congeService.findCongesByStatus(statut);
     }
 
-    public List<Conge> listerCongesParType(String type) throws IOException {
-        return congeService.getCongesByType(type);
+    public List<Conge> listerCongesEnAttente() {
+        return congeService.findPendingConges();
     }
 
-    public void traiterDemandeConge(int congeId, String statut, String motifRefus) throws IOException {
-        congeService.traiterDemande(congeId, statut, motifRefus);
+    public void traiterDemandeConge(int congeId, String statut, String motifRefus) {
+        congeService.updateCongeStatus(congeId, statut, motifRefus);
     }
 
-    public List<Conge> listerCongesEmploye(int employeeId) throws IOException {
-        return congeService.getCongesByEmployee(employeeId);
+    public int obtenirJoursCongesRestants(int employeeId) {
+        return congeService.getRemainingVacationDays(employeeId);
     }
 
-    public int obtenirJoursCongesRestants(int employeeId) throws IOException {
-        return congeService.getJoursCongesRestants(employeeId);
+    public void supprimerConge(int id) {
+        congeService.deleteConge(id);
     }
 
-    public List<Conge> listerCongesEnAttente() throws IOException {
-        return congeService.getCongesEnAttente();
+    public void exporterVersCsv(String cheminFichier) {
+        congeService.exportToCsv(cheminFichier);
     }
 
-    public List<Conge> listerCongesValides() throws IOException {
-        return congeService.getCongesValides();
-    }
-
-    public List<Conge> listerCongesRefuses() throws IOException {
-        return congeService.getCongesRefuses();
-    }
-
-    public void mettreAJourConge(Conge conge) throws IOException {
-        congeService.updateConge(conge);
+    public List<Conge> importerDepuisCsv(String cheminFichier) {
+        return congeService.importFromCsv(cheminFichier);
     }
 }

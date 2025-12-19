@@ -2,90 +2,61 @@ package service;
 
 import dao.DocumentDAO;
 import model.Document;
-import java.io.IOException;
-import java.util.Date;
+import csv.DocumentCSV;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-public class DocumentService {
-    private final DocumentDAO documentDAO;
+public class DocumentServiceImpl implements DocumentService {
+    private final DocumentDAO documentDao;
 
-    public DocumentService() {
-        this.documentDAO = new DocumentDAO();
+    public DocumentServiceImpl() {
+        this.documentDao = new DocumentDAO();
     }
 
-    public void saveDocument(Document document) throws IOException {
-        if (document == null || document.getNom() == null || document.getType() == null) {
-            throw new IllegalArgumentException("Le document et ses propriétés ne peuvent pas être nuls");
-        }
-
+    @Override
+    public Document saveDocument(Document document) {
         if (document.getId() == 0) {
-            int newId = 1;
-            List<Document> existingDocs = documentDAO.findAll();
-            if (!existingDocs.isEmpty()) {
-                newId = existingDocs.stream()
-                        .mapToInt(Document::getId)
-                        .max()
-                        .orElse(0) + 1;
-            }
-            document.setId(newId);
+            // Nouveau document
+            documentDao.save(document);
+        } else {
+            // Mise à jour d'un document existant
+            documentDao.update(document);
         }
-
-        if (document.getDateUpload() == null) {
-            document.setDateUpload(new Date());
-        }
-
-        documentDAO.save(document);
+        return document;
     }
 
-    public List<Document> loadDocuments() throws IOException {
-        return documentDAO.findAll();
+    @Override
+    public Optional<Document> findDocumentById(int id) {
+        return Optional.ofNullable(documentDao.findById(id));
     }
 
-    public Document findDocumentById(int id) throws IOException {
-        return documentDAO.findAll().stream()
-                .filter(doc -> doc.getId() == id)
-                .findFirst()
-                .orElse(null);
+    @Override
+    public List<Document> findDocumentsByEmployeeEmail(String email) {
+        return documentDao.findByEmployeeEmail(email);
     }
 
-    public boolean deleteDocument(int id) throws IOException {
-        List<Document> allDocuments = documentDAO.findAll();
-        boolean removed = allDocuments.removeIf(doc -> doc.getId() == id);
-        
-        if (removed) {
-            documentDAO.updateAll(allDocuments);
-        }
-        return removed;
+    @Override
+    public List<Document> findAllDocuments() {
+        return documentDao.findAll();
     }
 
-    public List<Document> getDocumentsByType(String type) throws IOException {
-        if (type == null || type.trim().isEmpty()) {
-            throw new IllegalArgumentException("Le type ne peut pas être vide");
-        }
-        return documentDAO.findAll().stream()
-                .filter(doc -> type.equalsIgnoreCase(doc.getType()))
-                .collect(Collectors.toList());
+    @Override
+    public void updateDocument(Document document) {
+        documentDao.update(document);
     }
 
-    public List<Document> getDocumentsByEmployee(String email) throws IOException {
-        if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("L'email ne peut pas être vide");
-        }
-        return documentDAO.findAll().stream()
-                .filter(doc -> email.equalsIgnoreCase(doc.getEmployeeEmail()))
-                .collect(Collectors.toList());
+    @Override
+    public void deleteDocument(int id) {
+        documentDao.delete(id);
     }
 
-    public void updateDocument(Document updatedDoc) throws IOException {
-        List<Document> allDocuments = documentDAO.findAll();
-        allDocuments = allDocuments.stream()
-            .map(doc -> doc.getId() == updatedDoc.getId() ? updatedDoc : doc)
-            .collect(Collectors.toList());
-        documentDAO.updateAll(allDocuments);
+    @Override
+    public void exportToCsv(String filePath) {
+        documentDao.exportToCsv(filePath);
     }
 
-    public void shutdown() {
-        documentDAO.shutdown();
+    @Override
+    public List<Document> importFromCsv(String filePath) {
+        return documentDao.importFromCsv(filePath);
     }
 }

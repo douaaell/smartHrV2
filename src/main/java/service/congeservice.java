@@ -2,130 +2,145 @@ package service;
 
 import dao.CongeDAO;
 import model.Conge;
-import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CongeService {
-    private static final int CONGES_ANNELS = 30;
+public class CongeServiceImpl implements CongeService {
+    private static final int JOURS_CONGES_ANNUELS = 25;
     private final CongeDAO congeDAO;
 
-    public CongeService() {
+    public CongeServiceImpl() {
         this.congeDAO = new CongeDAO();
     }
 
-    public void saveConge(Conge conge, int employeeId) throws IOException {
-        if (!conge.estValide()) {
-            throw new IllegalArgumentException("Le congé n'est pas valide. La date de fin doit être après ou égale à la date de début.");
+    @Override
+    public Conge saveConge(Conge conge) {
+        if (conge == null) {
+            throw new IllegalArgumentException("Le congé ne peut pas être null");
         }
-        
-        if ("Annuel".equals(conge.getType())) {
-            int joursDemandes = conge.calculerDuree();
-            int joursRestants = getJoursCongesRestants(employeeId);
+
+        if (!conge.estValide()) {
+            throw new IllegalArgumentException("Les dates du congé ne sont pas valides");
+        }
+
+        if (conge.getType().equals("ANNUEL")) {
+            int joursDemandes = (int) ChronoUnit.DAYS.between(
+                conge.getDateDebut().toLocalDate(),
+                conge.getDateFin().toLocalDate()) + 1;
+            
+            int joursRestants = getRemainingVacationDays(conge.getEmployeeId());
             
             if (joursDemandes > joursRestants) {
-                throw new IllegalArgumentException(
-                    String.format("Vous n'avez que %d jours de congés restants", joursRestants));
+                throw new IllegalStateException(
+                    String.format("Nombre de jours demandés (%d) dépasse les jours restants (%d)", 
+                    joursDemandes, joursRestants));
             }
         }
-        
-        int newId = 1;
-        List<Conge> allConges = congeDAO.findAll();
-        if (!allConges.isEmpty()) {
-            newId = allConges.stream()
-                           .mapToInt(Conge::getId)
-                           .max()
-                           .orElse(0) + 1;
+
+        if (conge.getId() == 0) {
+            return congeDAO.save(conge);
+        } else {
+            congeDAO.update(conge);
+            return conge;
         }
-        conge.setId(newId);
-        congeDAO.save(conge);
     }
 
-    public List<Conge> loadConges() throws IOException {
-        return congeDAO.findAll();
+    @Override
+    public Optional<Conge> findCongeById(int id) {
+        return Optional.ofNullable(congeDAO.findById(id));
     }
 
-    public Conge findCongeById(int id) throws IOException {
-        return congeDAO.findAll().stream()
-                .filter(c -> c.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public boolean deleteConge(int id) throws IOException {
-        List<Conge> allConges = congeDAO.findAll();
-        boolean removed = allConges.removeIf(c -> c.getId() == id);
-        
-        if (removed) {
-            congeDAO.updateAll(allConges);
-        }
-        return removed;
-    }
-
-    public List<Conge> getCongesByStatut(String statut) throws IOException {
-        return congeDAO.findAll().stream()
-                .filter(c -> c.getStatut().equalsIgnoreCase(statut))
-                .collect(Collectors.toList());
-    }
-
-    public List<Conge> getCongesByType(String type) throws IOException {
-        return congeDAO.findAll().stream()
-                .filter(c -> c.getType().equalsIgnoreCase(type))
-                .collect(Collectors.toList());
-    }
-
-    public void traiterDemande(int congeId, String statut, String motifRefus) throws IOException {
-        List<Conge> allConges = congeDAO.findAll();
-        
-        allConges.stream()
-            .filter(c -> c.getId() == congeId)
-            .findFirst()
-            .ifPresent(c -> {
-                c.setStatut(statut);
-                if ("Refusé".equals(statut)) {
-                    c.setMotif("Refusé: " + (motifRefus != null ? motifRefus : "Raison non spécifiée"));
-                }
-            });
-        
-        congeDAO.updateAll(allConges);
-    }
-
-    public List<Conge> getCongesByEmployee(int employeeId) throws IOException {
-        return congeDAO.findAll().stream()
-                .filter(c -> c.getEmployeeId() == employeeId)
-                .collect(Collectors.toList());
-    }
-    
-    public int getJoursCongesRestants(int employeeId) throws IOException {
-        int joursPris = congeDAO.findAll().stream()
-                .filter(c -> c.getEmployeeId() == employeeId)
-                .filter(c -> "Annuel".equals(c.getType()))
-                .filter(c -> "Validé".equals(c.getStatut()))
-                .mapToInt(Conge::calculerDuree)
-                .sum();
-                
-        return CONGES_ANNELS - joursPris;
-    }
-    
-    public List<Conge> getCongesEnAttente() throws IOException {
-        return getCongesByStatut("En attente");
-    }
-
-    public List<Conge> getCongesValides() throws IOException {
-        return getCongesByStatut("Validé");
-    }
-
-    public List<Conge> getCongesRefuses() throws IOException {
-        return getCongesByStatut("Refusé");
-    }
-    
-    public void updateConge(Conge updatedConge) throws IOException {
-        List<Conge> allConges = congeDAO.findAll();
-        
-        allConges = allConges.stream()
-            .map(c -> c.getId() == updatedConge.getId() ? updatedConge : c)
+    @Override
+    public List<Conge> findCongesByEmployeeId(int employeeId) {
+        return congeDAO.findByEmployeeId(employeeId).stream()
+            .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Conge> findAllConges() {
+        return congeDAO.findAll().stream()
+            .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Conge> findCongesByStatus(String status) {
+        return congeDAO.findAll().stream()
+            .filter(c -> c.getStatut().equalsIgnoreCase(status))
+            .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Conge> findPendingConges() {
+        return findCongesByStatus("EN_ATTENTE");
+    }
+
+    @Override
+    public void updateConge(Conge conge) {
+        if (conge == null || conge.getId() == 0) {
+            throw new IllegalArgumentException("Congé invalide pour la mise à jour");
+        }
+        congeDAO.update(conge);
+    }
+
+    @Override
+    public void updateCongeStatus(int congeId, String status, String motifRefus) {
+        Conge conge = congeDAO.findById(congeId);
+        if (conge == null) {
+            throw new IllegalArgumentException("Aucun congé trouvé avec l'ID: " + congeId);
+        }
         
-        congeDAO.updateAll(allConges);
+        conge.setStatut(status);
+        if (motifRefus != null && !motifRefus.isEmpty()) {
+            conge.setMotifRefus(motifRefus);
+        }
+        
+        congeDAO.update(conge);
+    }
+
+    @Override
+    public void deleteConge(int id) {
+        congeDAO.delete(id);
+    }
+
+    @Override
+    public int getRemainingVacationDays(int employeeId) {
+        int joursPris = congeDAO.findByEmployeeId(employeeId).stream()
+            .filter(c -> "VALIDE".equals(c.getStatut()) && "ANNUEL".equals(c.getType()))
+            .mapToInt(this::calculerJoursOuvres)
+            .sum();
+            
+        return Math.max(0, JOURS_CONGES_ANNUELS - joursPris);
+    }
+
+    private int calculerJoursOuvres(Conge conge) {
+        LocalDate date = conge.getDateDebut().toLocalDate();
+        LocalDate fin = conge.getDateFin().toLocalDate();
+        int jours = 0;
+        
+        while (!date.isAfter(fin)) {
+            if (date.getDayOfWeek().getValue() < 6) { // Lundi à Vendredi
+                jours++;
+            }
+            date = date.plusDays(1);
+        }
+        return jours;
+    }
+
+    @Override
+    public void exportToCsv(String filePath) {
+        congeDAO.exportToCsv(filePath);
+    }
+
+    @Override
+    public List<Conge> importFromCsv(String filePath) {
+        List<Conge> conges = congeDAO.importFromCsv(filePath);
+        conges.forEach(this::saveConge);
+        return conges;
     }
 }
