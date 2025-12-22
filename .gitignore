@@ -1,13 +1,7 @@
 # Fichiers compilés
+# Maven
 target/
-bin/
-*.class
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
+**/target/
 
 # Fichiers de l'IDE
 .settings/
