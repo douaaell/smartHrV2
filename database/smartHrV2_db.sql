@@ -46,7 +46,7 @@ CREATE TABLE `conge` (
 -- Structure de la table `contract`
 --
 
-CREATE TABLE contract (
+CREATE TABLE contrat (
   id VARCHAR(50) NOT NULL,
   employee_email VARCHAR(100) NOT NULL,
   type VARCHAR(50) NOT NULL,
