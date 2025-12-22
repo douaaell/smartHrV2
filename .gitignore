@@ -1,3 +1,7 @@
 # Maven
-target/
-**/target/
+/target/
+/bin/
+.classpath
+.project
+.settings/
+*.log

@@ -3,16 +3,17 @@ package service;
 import dao.CongeDAO;
 import model.Conge;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CongeServiceImpl implements CongeService {
+public class CongeService implements CongeService {
     private static final int JOURS_CONGES_ANNUELS = 25;
     private final CongeDAO congeDAO;
 
-    public CongeServiceImpl() {
+    public CongeService() {
         this.congeDAO = new CongeDAO();
     }
 
@@ -22,15 +23,12 @@ public class CongeServiceImpl implements CongeService {
             throw new IllegalArgumentException("Le congé ne peut pas être null");
         }
 
-        if (!conge.estValide()) {
+        if (!estValide(conge)) {
             throw new IllegalArgumentException("Les dates du congé ne sont pas valides");
         }
 
         if (conge.getType().equals("ANNUEL")) {
-            int joursDemandes = (int) ChronoUnit.DAYS.between(
-                conge.getDateDebut().toLocalDate(),
-                conge.getDateFin().toLocalDate()) + 1;
-            
+            int joursDemandes = calculerJoursOuvres(conge);
             int joursRestants = getRemainingVacationDays(conge.getEmployeeId());
             
             if (joursDemandes > joursRestants) {
@@ -46,6 +44,31 @@ public class CongeServiceImpl implements CongeService {
             congeDAO.update(conge);
             return conge;
         }
+    }
+
+    private boolean estValide(Conge conge) {
+        if (conge.getDateDebut() == null || conge.getDateFin() == null) {
+            return false;
+        }
+        return !conge.getDateDebut().after(conge.getDateFin());
+    }
+
+    private int calculerJoursOuvres(Conge conge) {
+        LocalDate debut = conge.getDateDebut().toInstant()
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate();
+        LocalDate fin = conge.getDateFin().toInstant()
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate();
+        
+        int jours = 0;
+        while (!debut.isAfter(fin)) {
+            if (debut.getDayOfWeek().getValue() < 6) { // Lundi à Vendredi
+                jours++;
+            }
+            debut = debut.plusDays(1);
+        }
+        return jours;
     }
 
     @Override
@@ -69,6 +92,10 @@ public class CongeServiceImpl implements CongeService {
 
     @Override
     public List<Conge> findCongesByStatus(String status) {
+        if (status == null || status.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le statut ne peut pas être vide");
+        }
+        
         return congeDAO.findAll().stream()
             .filter(c -> c.getStatut().equalsIgnoreCase(status))
             .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
@@ -90,6 +117,10 @@ public class CongeServiceImpl implements CongeService {
 
     @Override
     public void updateCongeStatus(int congeId, String status, String motifRefus) {
+        if (status == null || status.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le statut ne peut pas être vide");
+        }
+
         Conge conge = congeDAO.findById(congeId);
         if (conge == null) {
             throw new IllegalArgumentException("Aucun congé trouvé avec l'ID: " + congeId);
@@ -105,12 +136,16 @@ public class CongeServiceImpl implements CongeService {
 
     @Override
     public void deleteConge(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID de congé invalide");
+        }
         congeDAO.delete(id);
     }
 
     @Override
     public int getRemainingVacationDays(int employeeId) {
-        int joursPris = congeDAO.findByEmployeeId(employeeId).stream()
+        List<Conge> conges = congeDAO.findByEmployeeId(employeeId);
+        int joursPris = conges.stream()
             .filter(c -> "VALIDE".equals(c.getStatut()) && "ANNUEL".equals(c.getType()))
             .mapToInt(this::calculerJoursOuvres)
             .sum();
@@ -118,27 +153,19 @@ public class CongeServiceImpl implements CongeService {
         return Math.max(0, JOURS_CONGES_ANNUELS - joursPris);
     }
 
-    private int calculerJoursOuvres(Conge conge) {
-        LocalDate date = conge.getDateDebut().toLocalDate();
-        LocalDate fin = conge.getDateFin().toLocalDate();
-        int jours = 0;
-        
-        while (!date.isAfter(fin)) {
-            if (date.getDayOfWeek().getValue() < 6) { // Lundi à Vendredi
-                jours++;
-            }
-            date = date.plusDays(1);
-        }
-        return jours;
-    }
-
     @Override
     public void exportToCsv(String filePath) {
+        if (filePath == null || filePath.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le chemin du fichier ne peut pas être vide");
+        }
         congeDAO.exportToCsv(filePath);
     }
 
     @Override
     public List<Conge> importFromCsv(String filePath) {
+        if (filePath == null || filePath.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le chemin du fichier ne peut pas être vide");
+        }
         List<Conge> conges = congeDAO.importFromCsv(filePath);
         conges.forEach(this::saveConge);
         return conges;
