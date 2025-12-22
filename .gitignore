@@ -1,0 +1,86 @@
+# Fichiers compilés
+target/
+bin/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Fichiers de l'IDE
+.settings/
+.project
+.classpath
+.idea/
+*.iml
+*.iws
+*.ipr
+*.prefs
+.factorypath
+
+# Fichiers de logs
+*.log
+logs/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Fichiers Maven
+dependency-reduced-pom.xml
+maven-*.xml
+mvnw/
+mvnw.cmd
+.mvn/
+*.versionsBackup
+
+# Fichiers de configuration locaux
+*.properties
+*.yml
+!application*.yml
+!bootstrap*.yml
+
+# Fichiers de base de données
+*.db
+*.sql
+*.h2.db
+
+# Fichiers de cache
+.cache/
+.apt_generated/
+
+# Fichiers de build
+build/
+out/
+dist/
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*.swp
+*~.nib
+*.sw?
+~$*
+*.swo
+*#
+
+# Fichiers de couverture de test
+coverage/
+*.coverage
+*.lcov
+
+# Fichiers de documentation
+doc/
+docs/
+site/
+apidocs/
+
+# Fichiers d'environnement
+.env
+.env.local
+.env.*.local
