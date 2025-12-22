@@ -46,15 +46,21 @@ CREATE TABLE `conge` (
 -- Structure de la table `contract`
 --
 
-CREATE TABLE `contract` (
-  `id` varchar(50) NOT NULL,
-  `employee_email` varchar(100) NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
-  `file_name_pdf` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+CREATE TABLE contract (
+  id VARCHAR(50) NOT NULL,
+  employee_email VARCHAR(100) NOT NULL,
+  type VARCHAR(50) NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  salary DOUBLE NOT NULL,
+  position VARCHAR(50),
+  department VARCHAR(50),
+  benefits VARCHAR(255),
+  status ENUM('ACTIF','SUSPENDU','TERMINE') DEFAULT 'ACTIF',
+  file_name_pdf VARCHAR(255),
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 
 -- --------------------------------------------------------
 
