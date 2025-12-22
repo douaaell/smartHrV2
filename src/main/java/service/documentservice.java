@@ -2,36 +2,43 @@ package service;
 
 import dao.DocumentDAO;
 import model.Document;
-import csv.DocumentCSV;
 import java.util.List;
 import java.util.Optional;
 
-public class DocumentServiceImpl implements DocumentService {
+public class DocumentService implements DocumentService {
     private final DocumentDAO documentDao;
 
-    public DocumentServiceImpl() {
+    public DocumentService() {
         this.documentDao = new DocumentDAO();
     }
 
     @Override
     public Document saveDocument(Document document) {
-        if (document.getId() == 0) {
-            // Nouveau document
-            documentDao.save(document);
-        } else {
-            // Mise à jour d'un document existant
-            documentDao.update(document);
+        if (document == null) {
+            throw new IllegalArgumentException("Le document ne peut pas être null");
         }
-        return document;
+
+        if (document.getId() == 0) {
+            return documentDao.save(document);
+        } else {
+            documentDao.update(document);
+            return document;
+        }
     }
 
     @Override
     public Optional<Document> findDocumentById(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID de document invalide");
+        }
         return Optional.ofNullable(documentDao.findById(id));
     }
 
     @Override
     public List<Document> findDocumentsByEmployeeEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("L'email ne peut pas être vide");
+        }
         return documentDao.findByEmployeeEmail(email);
     }
 
@@ -42,21 +49,35 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public void updateDocument(Document document) {
+        if (document == null || document.getId() == 0) {
+            throw new IllegalArgumentException("Document invalide pour la mise à jour");
+        }
         documentDao.update(document);
     }
 
     @Override
     public void deleteDocument(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("ID de document invalide");
+        }
         documentDao.delete(id);
     }
 
     @Override
     public void exportToCsv(String filePath) {
+        if (filePath == null || filePath.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le chemin du fichier ne peut pas être vide");
+        }
         documentDao.exportToCsv(filePath);
     }
 
     @Override
     public List<Document> importFromCsv(String filePath) {
-        return documentDao.importFromCsv(filePath);
+        if (filePath == null || filePath.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le chemin du fichier ne peut pas être vide");
+        }
+        List<Document> documents = documentDao.importFromCsv(filePath);
+        documents.forEach(this::saveDocument);
+        return documents;
     }
 }
