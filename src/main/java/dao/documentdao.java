@@ -6,6 +6,8 @@ import utils.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class DocumentDAO {
     private static final String INSERT_SQL = "INSERT INTO documents (nom, type, chemin, date_upload, employee_email) VALUES (?, ?, ?, ?, ?)";
@@ -142,15 +144,23 @@ public class DocumentDAO {
 
     // Méthodes pour l'export/import CSV
     public void exportToCsv(String filePath) {
-        List<Document> documents = findAll();
-        DocumentCSV.exportToCsv(documents, filePath);
+        try {
+            List<Document> documents = findAll();
+            csv.DocumentCSV.exportToCsv(documents, filePath).get(); // Attendre la fin de l'export
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de l'export CSV: " + e.getMessage(), e);
+        }
     }
 
     public List<Document> importFromCsv(String filePath) {
-        List<Document> documents = DocumentCSV.importFromCsv(filePath);
-        for (Document doc : documents) {
-            save(doc);
+        try {
+            List<Document> documents = csv.DocumentCSV.importFromCsv(filePath).get(); // Attendre la fin de l'import
+            for (Document doc : documents) {
+                save(doc);
+            }
+            return documents;
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de l'import CSV: " + e.getMessage(), e);
         }
-        return documents;
     }
 }

@@ -23,7 +23,7 @@ public class DatabaseConnection {
         
         try (Connection conn = getConnection()) {
             System.out.println("✅ Connexion réussie à la base de données !");
-            System.out.println("Base de données : smarthr_db");
+            System.out.println("Base de données : smarthrv2_db");
             System.out.println("Utilisateur : " + USER);
         } catch (SQLException e) {
             System.err.println("❌ Erreur de connexion : " + e.getMessage());

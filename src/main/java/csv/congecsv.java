@@ -34,7 +34,7 @@ public class CongeCSV {
                         writer.write(escapeCsv(conge.getMotif() == null ? "" : conge.getMotif()) + "\n");
                     }
                 } catch (IOException e) {
-                    throw new CsvExportException("Erreur lors de l'export CSV des congés: " + e.getMessage(), e);
+                    throw new RuntimeException("Erreur lors de l'export CSV des congés: " + e.getMessage(), e);
                 }
                 return null;
             }
@@ -64,7 +64,7 @@ public class CongeCSV {
                     }
                     return conges;
                 } catch (Exception e) {
-                    throw new CsvImportException("Erreur lors de l'import CSV des congés: " + e.getMessage(), e);
+                    throw new RuntimeException("Erreur lors de la lecture du fichier CSV: " + e.getMessage(), e);
                 }
             }
         });

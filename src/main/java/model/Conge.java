@@ -130,6 +130,10 @@ public class Conge implements Serializable {
     public void setMotif(String motif) {
         this.motif = motif != null ? motif.trim() : "";
     }
+    
+    public void setMotifRefus(String motifRefus) {
+        this.motif = motifRefus != null ? motifRefus.trim() : "";
+    }
 
     // Méthodes métier
     public int calculerDuree() {

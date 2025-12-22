@@ -2,14 +2,13 @@ package controller;
 
 import model.Document;
 import service.DocumentService;
-import service.DocumentServiceImpl;
 import java.util.List;
 
 public class DocumentController {
     private final DocumentService documentService;
 
     public DocumentController() {
-        this.documentService = new DocumentServiceImpl();
+        this.documentService = new DocumentService();
     }
 
     public Document ajouterDocument(Document document) {

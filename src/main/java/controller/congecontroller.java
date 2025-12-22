@@ -2,14 +2,14 @@ package controller;
 
 import model.Conge;
 import service.CongeService;
-import service.CongeServiceImpl;
 import java.util.List;
+import model.Conge.StatutConge;
 
 public class CongeController {
     private final CongeService congeService;
 
     public CongeController() {
-        this.congeService = new CongeServiceImpl();
+        this.congeService = new CongeService();
     }
 
     public Conge demanderConge(Conge conge) {
@@ -29,7 +29,10 @@ public class CongeController {
         return congeService.findCongesByEmployeeId(employeeId);
     }
 
-    public List<Conge> listerCongesParStatut(String statut) {
+    public List<Conge> listerCongesParStatut(StatutConge statut) {
+        if (statut == null) {
+            throw new IllegalArgumentException("Le statut ne peut pas être null");
+        }
         return congeService.findCongesByStatus(statut);
     }
 
@@ -37,7 +40,10 @@ public class CongeController {
         return congeService.findPendingConges();
     }
 
-    public void traiterDemandeConge(int congeId, String statut, String motifRefus) {
+    public void traiterDemandeConge(int congeId, StatutConge statut, String motifRefus) {
+        if (statut == null) {
+            throw new IllegalArgumentException("Le statut ne peut pas être null");
+        }
         congeService.updateCongeStatus(congeId, statut, motifRefus);
     }
 

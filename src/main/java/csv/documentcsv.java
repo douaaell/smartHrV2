@@ -32,7 +32,7 @@ public class DocumentCSV {
                         writer.write(escapeCsv(doc.getEmployeeEmail()) + "\n");
                     }
                 } catch (IOException e) {
-                    throw new CsvExportException("Erreur lors de l'export CSV des documents: " + e.getMessage(), e);
+                    throw new RuntimeException("Erreur lors de l'export CSV des documents: " + e.getMessage(), e);
                 }
                 return null;
             }
@@ -61,7 +61,7 @@ public class DocumentCSV {
                     }
                     return documents;
                 } catch (Exception e) {
-                    throw new CsvImportException("Erreur lors de l'import CSV des documents: " + e.getMessage(), e);
+                    throw new RuntimeException("Erreur lors de la lecture du fichier CSV: " + e.getMessage(), e);
                 }
             }
         });

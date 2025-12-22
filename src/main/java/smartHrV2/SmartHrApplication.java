@@ -2,6 +2,7 @@ package smartHrV2;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import smartHrV2.views.LoginView;
 
 public class SmartHrApplication extends Application {
     

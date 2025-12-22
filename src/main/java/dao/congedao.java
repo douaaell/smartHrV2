@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import utils.DatabaseConnection;
 
 public class CongeDAO {
     private static final String INSERT_SQL = "INSERT INTO conges (employee_id, type, date_debut, date_fin, statut, motif) VALUES (?, ?, ?, ?, ?, ?)";
@@ -145,16 +150,24 @@ public class CongeDAO {
 
     // Méthodes pour l'export/import CSV
     public void exportToCsv(String filePath) {
-        List<Conge> conges = findAll();
-        CongeCSV.exportToCsv(conges, filePath);
+        try {
+            List<Conge> conges = findAll();
+            CongeCSV.exportToCsv(conges, filePath).get(); // Attendre la fin de l'export
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Erreur lors de l'export CSV: " + e.getMessage(), e);
+        }
     }
 
     public List<Conge> importFromCsv(String filePath) {
-        List<Conge> conges = CongeCSV.importFromCsv(filePath);
-        for (Conge conge : conges) {
-            save(conge);
+        try {
+            List<Conge> conges = CongeCSV.importFromCsv(filePath).get(); // Attendre la fin de l'import
+            for (Conge conge : conges) {
+                save(conge);
+            }
+            return conges;
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Erreur lors de l'import CSV: " + e.getMessage(), e);
         }
-        return conges;
     }
 
     // Méthode utilitaire pour mettre à jour le statut d'un congé
