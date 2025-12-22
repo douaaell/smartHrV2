@@ -17,12 +17,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `smartHrV2_db`
+-- Base de données : `smartHrV2_db` 
 --
 
 -- --------------------------------------------------------
 --
--- Structure de la table `employe`
+-- Structure de la table `employe` 
 --
 CREATE TABLE `employe` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -38,7 +38,7 @@ CREATE TABLE `employe` (
 
 -- --------------------------------------------------------
 --
--- Structure de la table `hr`
+-- Structure de la table `hr` 
 --
 CREATE TABLE `hr` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -54,7 +54,7 @@ CREATE TABLE `hr` (
 
 -- --------------------------------------------------------
 --
--- Structure de la table `conge`
+-- Structure de la table `conge` 
 --
 CREATE TABLE `conge` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -71,7 +71,7 @@ CREATE TABLE `conge` (
 
 -- --------------------------------------------------------
 --
--- Structure de la table `document`
+-- Structure de la table `document` 
 --
 CREATE TABLE `document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -87,7 +87,7 @@ CREATE TABLE `document` (
 
 -- --------------------------------------------------------
 --
--- Structure de la table `contrat`
+-- Structure de la table `contrat` 
 --
 CREATE TABLE `contrat` (
   `id` VARCHAR(50) NOT NULL,
@@ -101,31 +101,32 @@ CREATE TABLE `contrat` (
   `benefits` VARCHAR(255),
   `status` ENUM('ACTIF','SUSPENDU','TERMINE') DEFAULT 'ACTIF',
   `file_name_pdf` VARCHAR(255),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_contrat_employee` FOREIGN KEY (`employee_email`) REFERENCES `employe` (`email`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Index pour les tables déchargées
 --
-ALTER TABLE `conge`
+ALTER TABLE `conge` 
   ADD KEY `employee_id` (`employee_id`);
 
-ALTER TABLE `employe`
+ALTER TABLE `employe` 
   ADD UNIQUE (`email`);
 
 -- --------------------------------------------------------
 -- AUTO_INCREMENT pour les tables déchargées
 --
-ALTER TABLE `conge`
+ALTER TABLE `conge` 
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `document`
+ALTER TABLE `document` 
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `employe`
+ALTER TABLE `employe` 
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `hr`
+ALTER TABLE `hr` 
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 COMMIT;
