@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.RHDashboardController">
+
+    <!-- Menu Latéral -->
+    <left>
+        <VBox spacing="10" styleClass="sidebar" alignment="TOP_CENTER" prefWidth="200">
+            <Label text="SmartRH" styleClass="app-title"/>
+            <Button text="Dashboard" styleClass="sidebar-btn" />
+            <Button text="Employés" styleClass="sidebar-btn" />
+            <Button text="Contrats" styleClass="sidebar-btn" />
+            <Button text="Congés" styleClass="sidebar-btn" />
+            <Button text="Paramètres" styleClass="sidebar-btn" />
+            <Button text="Déconnexion" styleClass="sidebar-btn" />
+        </VBox>
+    </left>
+
+    <!-- Zone principale -->
+    <center>
+        <VBox spacing="20" padding="20">
+            <!-- Header -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Tableau de Bord RH" styleClass="header-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Bienvenue, RH Admin" styleClass="header-subtitle"/>
+            </HBox>
+
+            <!-- Cards principales -->
+            <HBox spacing="20">
+                <VBox styleClass="card">
+                    <Label text="120" styleClass="card-number"/>
+                    <Label text="Employés" styleClass="card-title"/>
+                </VBox>
+                <VBox styleClass="card">
+                    <Label text="95" styleClass="card-number"/>
+                    <Label text="Contrats Actifs" styleClass="card-title"/>
+                </VBox>
+                <VBox styleClass="card">
+                    <Label text="8" styleClass="card-number"/>
+                    <Label text="Congés en Attente" styleClass="card-title"/>
+                </VBox>
+                <VBox styleClass="card">
+                    <Label text="5" styleClass="card-number"/>
+                    <Label text="Contrats Expirant" styleClass="card-title"/>
+                </VBox>
+            </HBox>
+
+            <!-- Graphiques (placeholders pour BarChart / PieChart) -->
+            <HBox spacing="20">
+                <VBox styleClass="chart-card" prefWidth="300" prefHeight="250">
+                    <Label text="Répartition des Employés par Département"/>
+                    <!-- Ici on ajoutera le PieChart dans le Controller -->
+                    <Pane fx:id="pieChartContainer" prefHeight="200"/>
+                </VBox>
+                <VBox styleClass="chart-card" prefWidth="300" prefHeight="250">
+                    <Label text="Congés Pris par Mois"/>
+                    <!-- Ici on ajoutera le BarChart dans le Controller -->
+                    <Pane fx:id="barChartContainer" prefHeight="200"/>
+                </VBox>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

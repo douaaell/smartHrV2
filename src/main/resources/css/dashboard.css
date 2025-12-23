@@ -1,0 +1,65 @@
+/* Couleur principale : blanc et bleu */
+.root {
+    -fx-font-family: "Arial";
+    -fx-background-color: #ffffff;
+}
+
+.sidebar {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 20;
+}
+
+.app-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 20 0;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #e0e0e0;
+    -fx-cursor: hand;
+}
+
+.header-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.header-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+.card {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.card-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+.card-number {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.chart-card {
+    -fx-background-color: #ffffff;
+    -fx-padding: 15;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}
