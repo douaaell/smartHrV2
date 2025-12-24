@@ -6,25 +6,32 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.shape.Rectangle?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.RHDashboardController">
 
     <!-- Menu Latéral -->
     <left>
         <VBox spacing="10" styleClass="sidebar" alignment="TOP_CENTER" prefWidth="200">
             <Label text="SmartRH" styleClass="app-title"/>
-            <Button text="Dashboard" styleClass="sidebar-btn" />
-            <Button text="Employés" styleClass="sidebar-btn" />
-            <Button text="Contrats" styleClass="sidebar-btn" />
-            <Button text="Congés" styleClass="sidebar-btn" />
-            <Button text="Paramètres" styleClass="sidebar-btn" />
-            <Button text="Déconnexion" styleClass="sidebar-btn" />
+            <Button text="Dashboard" styleClass="sidebar-btn"/>
+            <Button text="Employés" styleClass="sidebar-btn"/>
+            <Button text="Contrats" styleClass="sidebar-btn"/>
+            <Button text="Congés" styleClass="sidebar-btn"/>
+            <Button text="Paramètres" styleClass="sidebar-btn"/>
+            <Button text="Déconnexion" styleClass="sidebar-btn"/>
         </VBox>
     </left>
 
     <!-- Zone principale -->
     <center>
-        <VBox spacing="20" padding="20">
+       <VBox spacing="40" VBox.vgrow="ALWAYS">
+
+            <!-- ✅ correction UNIQUE ici -->
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
             <!-- Header -->
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Tableau de Bord RH" styleClass="header-title"/>
@@ -33,36 +40,34 @@
             </HBox>
 
             <!-- Cards principales -->
-            <HBox spacing="20">
-                <VBox styleClass="card">
+            <HBox spacing="40" alignment="CENTER" HBox.hgrow="ALWAYS">
+                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
                     <Label text="120" styleClass="card-number"/>
                     <Label text="Employés" styleClass="card-title"/>
                 </VBox>
-                <VBox styleClass="card">
+                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
                     <Label text="95" styleClass="card-number"/>
                     <Label text="Contrats Actifs" styleClass="card-title"/>
                 </VBox>
-                <VBox styleClass="card">
+                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
                     <Label text="8" styleClass="card-number"/>
                     <Label text="Congés en Attente" styleClass="card-title"/>
                 </VBox>
-                <VBox styleClass="card">
+                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
                     <Label text="5" styleClass="card-number"/>
                     <Label text="Contrats Expirant" styleClass="card-title"/>
                 </VBox>
             </HBox>
 
-            <!-- Graphiques (placeholders pour BarChart / PieChart) -->
-            <HBox spacing="20">
-                <VBox styleClass="chart-card" prefWidth="300" prefHeight="250">
+            <!-- Graphiques -->
+            <HBox spacing="20" HBox.hgrow="ALWAYS">
+                <VBox styleClass="chart-card" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
                     <Label text="Répartition des Employés par Département"/>
-                    <!-- Ici on ajoutera le PieChart dans le Controller -->
-                    <Pane fx:id="pieChartContainer" prefHeight="200"/>
+                     <StackPane fx:id="pieChartContainer" VBox.vgrow="ALWAYS"  minHeight="300"/>
                 </VBox>
-                <VBox styleClass="chart-card" prefWidth="300" prefHeight="250">
+                <VBox styleClass="chart-card"  VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
                     <Label text="Congés Pris par Mois"/>
-                    <!-- Ici on ajoutera le BarChart dans le Controller -->
-                    <Pane fx:id="barChartContainer" prefHeight="200"/>
+                   <StackPane fx:id="barChartContainer" VBox.vgrow="ALWAYS"  minHeight="300"/>
                 </VBox>
             </HBox>
 

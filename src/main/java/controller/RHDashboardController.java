@@ -30,6 +30,13 @@ public class RHDashboardController {
         pieChart.getData().add(new PieChart.Data("Finance", 15));
         pieChart.setLegendVisible(true);
         pieChart.setLabelsVisible(true);
+        pieChart.setMinSize(400, 300);
+
+     // 🔥 CLÉ DE LA CORRECTION
+        pieChart.prefWidthProperty().bind(pieChartContainer.widthProperty());
+        pieChart.prefHeightProperty().bind(pieChartContainer.heightProperty());
+
+        pieChartContainer.getChildren().clear();
         pieChartContainer.getChildren().add(pieChart);
     }
 
@@ -56,6 +63,11 @@ public class RHDashboardController {
         series.getData().add(new XYChart.Data<>("Dec", 5));
 
         barChart.getData().add(series);
+        barChart.prefWidthProperty().bind(barChartContainer.widthProperty());
+        barChart.prefHeightProperty().bind(barChartContainer.heightProperty());
+        barChart.setMinSize(500, 300);
+
+        barChartContainer.getChildren().clear();
         barChartContainer.getChildren().add(barChart);
     }
 }
