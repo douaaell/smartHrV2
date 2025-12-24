@@ -1,4 +1,4 @@
-package smartHrV2.views;
+/*package smartHrV2.views;
 
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -38,3 +38,4 @@ public class LoginView {
         primaryStage.show();
     }
 }
+*/
