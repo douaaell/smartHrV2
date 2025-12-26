@@ -14,8 +14,8 @@
     <left>
         <VBox spacing="10" styleClass="sidebar" alignment="TOP_CENTER" prefWidth="200">
             <Label text="SmartRH" styleClass="app-title"/>
-            <Button text="Dashboard" styleClass="sidebar-btn"/>
-            <Button text="Employés" styleClass="sidebar-btn"/>
+            <Button text="Dashboard" styleClass="sidebar-btn"/>	
+            <Button text="Employés" styleClass="sidebar-btn"   onAction="#ouvrirEmployes"/>
             <Button text="Contrats" styleClass="sidebar-btn"/>
             <Button text="Congés" styleClass="sidebar-btn"/>
             <Button text="Paramètres" styleClass="sidebar-btn"/>

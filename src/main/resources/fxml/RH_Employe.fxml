@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.RHEmployeController"
+             stylesheets="@../css/employe.css">
+
+    <!-- TOP : Actions -->
+    <top>
+        <HBox spacing="10"  alignment="CENTER_LEFT">
+         <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+            <Button text="+ Ajouter" onAction="#ajouterEmploye"/>
+            <TextField fx:id="searchField" promptText="Rechercher par nom ou prénom"/>
+            <Button text="Rechercher" onAction="#rechercher"/>
+            <ComboBox fx:id="departementFilter" promptText="Filtrer par département"/>
+            <Button text="Actualiser" onAction="#chargerEmployes"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER : Table -->
+    <center>
+        <TableView fx:id="tableEmployes">
+
+            <columns>
+                <TableColumn text="ID" fx:id="colId"/>
+                <TableColumn text="Nom" fx:id="colNom"/>
+                <TableColumn text="Prénom" fx:id="colPrenom"/>
+                <TableColumn text="Email" fx:id="colEmail"/>
+                <TableColumn text="Département" fx:id="colDepartement"/>
+                <TableColumn text="Position" fx:id="colPosition"/>
+                <TableColumn text="Actions" fx:id="colActions"/>
+            </columns>
+
+        </TableView>
+    </center>
+
+</BorderPane>
