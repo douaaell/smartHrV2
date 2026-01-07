@@ -6,12 +6,30 @@ import java.util.Objects;
 
 public class Document implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
+    public enum StatutDocument {
+        EN_ATTENTE("En attente"),
+        VALIDE("Validé"),
+        REFUSE("Refusé");
+
+        private final String libelle;
+
+        StatutDocument(String libelle) {
+            this.libelle = libelle;
+        }
+
+        public String getLibelle() {
+            return libelle;
+        }
+    }
+
     private int id;
     private String nom;
     private String type;
     private String chemin;
     private Date dateUpload;
+    private Date dateAbsence;
+    private StatutDocument statut;
     private String employeeEmail;
 
     // Constructeurs
@@ -91,6 +109,22 @@ public class Document implements Serializable {
         this.employeeEmail = employeeEmail.trim().toLowerCase();
     }
 
+    public Date getDateAbsence() {
+        return dateAbsence;
+    }
+
+    public void setDateAbsence(Date dateAbsence) {
+        this.dateAbsence = dateAbsence;
+    }
+
+    public StatutDocument getStatut() {
+        return statut;
+    }
+
+    public void setStatut(StatutDocument statut) {
+        this.statut = statut != null ? statut : StatutDocument.EN_ATTENTE;
+    }
+
     // Méthodes métier
     public void upload() {
         if (this.dateUpload == null) {
@@ -110,12 +144,14 @@ public class Document implements Serializable {
     // equals et hashCode
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Document)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Document))
+            return false;
         Document document = (Document) o;
-        return id == document.id && 
-               Objects.equals(nom, document.nom) &&
-               Objects.equals(employeeEmail, document.employeeEmail);
+        return id == document.id &&
+                Objects.equals(nom, document.nom) &&
+                Objects.equals(employeeEmail, document.employeeEmail);
     }
 
     @Override

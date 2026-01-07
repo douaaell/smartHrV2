@@ -6,33 +6,36 @@ import utils.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class DocumentDAO {
-    private static final String INSERT_SQL = "INSERT INTO documents (nom, type, chemin, date_upload, employee_email) VALUES (?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_SQL = "SELECT * FROM documents";
-    private static final String SELECT_BY_ID_SQL = "SELECT * FROM documents WHERE id = ?";
-    private static final String SELECT_BY_EMPLOYEE_EMAIL = "SELECT * FROM documents WHERE employee_email = ?";
-    private static final String UPDATE_SQL = "UPDATE documents SET nom = ?, type = ?, chemin = ?, date_upload = ?, employee_email = ? WHERE id = ?";
-    private static final String DELETE_SQL = "DELETE FROM documents WHERE id = ?";
+    private static final String INSERT_SQL = "INSERT INTO document (nom, type, chemin, date_upload, date_absence, statut, employee_email) VALUES (?, ?, ?, ?, ?, 'EN_ATTENTE', ?)";
+    private static final String SELECT_ALL_SQL = "SELECT * FROM document";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM document WHERE id = ?";
+    private static final String SELECT_BY_EMPLOYEE_EMAIL = "SELECT * FROM document WHERE employee_email = ?";
+    private static final String UPDATE_SQL = "UPDATE document SET nom = ?, type = ?, chemin = ?, date_upload = ?, date_absence = ?, statut = ?, employee_email = ? WHERE id = ?";
+    private static final String DELETE_SQL = "DELETE FROM document WHERE id = ?";
 
     public void save(Document document) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setString(1, document.getNom());
             stmt.setString(2, document.getType());
             stmt.setString(3, document.getChemin());
             stmt.setTimestamp(4, new Timestamp(document.getDateUpload().getTime()));
-            stmt.setString(5, document.getEmployeeEmail());
-            
+            if (document.getDateAbsence() != null) {
+                stmt.setDate(5, new java.sql.Date(document.getDateAbsence().getTime()));
+            } else {
+                stmt.setDate(5, null);
+            }
+            stmt.setString(6, document.getEmployeeEmail());
+
             int affectedRows = stmt.executeUpdate();
-            
+
             if (affectedRows == 0) {
                 throw new SQLException("Échec de la création du document, aucune ligne affectée.");
             }
-            
+
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     document.setId(generatedKeys.getInt(1));
@@ -48,11 +51,11 @@ public class DocumentDAO {
 
     public List<Document> findAll() {
         List<Document> documents = new ArrayList<>();
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_SQL);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_SQL);
+                ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 documents.add(mapResultSetToDocument(rs));
             }
@@ -60,14 +63,14 @@ public class DocumentDAO {
             e.printStackTrace();
             throw new RuntimeException("Erreur lors de la récupération des documents", e);
         }
-        
+
         return documents;
     }
 
     public Document findById(int id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
+
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -83,10 +86,10 @@ public class DocumentDAO {
 
     public List<Document> findByEmployeeEmail(String email) {
         List<Document> documents = new ArrayList<>();
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_EMPLOYEE_EMAIL)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(SELECT_BY_EMPLOYEE_EMAIL)) {
+
             stmt.setString(1, email);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -97,21 +100,31 @@ public class DocumentDAO {
             e.printStackTrace();
             throw new RuntimeException("Erreur lors de la recherche des documents par email employé", e);
         }
-        
+
         return documents;
     }
 
     public void update(Document document) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UPDATE_SQL)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(UPDATE_SQL)) {
+
             stmt.setString(1, document.getNom());
             stmt.setString(2, document.getType());
             stmt.setString(3, document.getChemin());
             stmt.setTimestamp(4, new Timestamp(document.getDateUpload().getTime()));
-            stmt.setString(5, document.getEmployeeEmail());
-            stmt.setInt(6, document.getId());
-            
+            if (document.getDateAbsence() != null) {
+                stmt.setDate(5, new java.sql.Date(document.getDateAbsence().getTime()));
+            } else {
+                stmt.setDate(5, null);
+            }
+            if (document.getStatut() != null) {
+                stmt.setString(6, document.getStatut().name());
+            } else {
+                stmt.setString(6, "EN_ATTENTE");
+            }
+            stmt.setString(7, document.getEmployeeEmail());
+            stmt.setInt(8, document.getId());
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,8 +134,8 @@ public class DocumentDAO {
 
     public void delete(int id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(DELETE_SQL)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(DELETE_SQL)) {
+
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -138,6 +151,14 @@ public class DocumentDAO {
         document.setType(rs.getString("type"));
         document.setChemin(rs.getString("chemin"));
         document.setDateUpload(rs.getTimestamp("date_upload"));
+        java.sql.Date dateAbs = rs.getDate("date_absence");
+        if (dateAbs != null) {
+            document.setDateAbsence(new Date(dateAbs.getTime()));
+        }
+        String statutStr = rs.getString("statut");
+        if (statutStr != null) {
+            document.setStatut(Document.StatutDocument.valueOf(statutStr));
+        }
         document.setEmployeeEmail(rs.getString("employee_email"));
         return document;
     }

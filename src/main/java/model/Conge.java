@@ -12,6 +12,7 @@ public class Conge implements Serializable {
         PATERNITE("Paternité"),
         SANS_SOLDE("Sans solde"),
         FORMATION("Formation"),
+
         AUTRE("Autre");
 
         private final String libelle;
@@ -43,7 +44,7 @@ public class Conge implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
-    
+
     private int id;
     private int employeeId;
     private TypeConge type;
@@ -51,13 +52,15 @@ public class Conge implements Serializable {
     private Date dateFin;
     private StatutConge statut;
     private String motif;
+    private Date dateDemande;
 
     // Constructeurs
     public Conge() {
         // Constructeur par défaut nécessaire pour la désérialisation
     }
 
-    public Conge(int id, int employeeId, TypeConge type, Date dateDebut, Date dateFin, StatutConge statut, String motif) {
+    public Conge(int id, int employeeId, TypeConge type, Date dateDebut, Date dateFin, StatutConge statut,
+            String motif) {
         this.id = id;
         this.employeeId = employeeId;
         setType(type);
@@ -71,7 +74,7 @@ public class Conge implements Serializable {
     public int getId() {
         return id;
     }
-    
+
     public int getEmployeeId() {
         return employeeId;
     }
@@ -100,7 +103,7 @@ public class Conge implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
@@ -130,9 +133,17 @@ public class Conge implements Serializable {
     public void setMotif(String motif) {
         this.motif = motif != null ? motif.trim() : "";
     }
-    
+
     public void setMotifRefus(String motifRefus) {
         this.motif = motifRefus != null ? motifRefus.trim() : "";
+    }
+
+    public Date getDateDemande() {
+        return dateDemande;
+    }
+
+    public void setDateDemande(Date dateDemande) {
+        this.dateDemande = dateDemande;
     }
 
     // Méthodes métier
@@ -154,12 +165,14 @@ public class Conge implements Serializable {
     // equals et hashCode
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Conge)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Conge))
+            return false;
         Conge conge = (Conge) o;
-        return id == conge.id && 
-               employeeId == conge.employeeId &&
-               type == conge.type;
+        return id == conge.id &&
+                employeeId == conge.employeeId &&
+                type == conge.type;
     }
 
     @Override

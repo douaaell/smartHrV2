@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="controller.RHContratController"
+            prefWidth="600" prefHeight="550" style="-fx-background-color: white;">
+
+    <!-- HEADER -->
+    <top>
+        <VBox spacing="10" style="-fx-padding: 20 30; -fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
+            <Label text="Nouveau contrat" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+        </VBox>
+    </top>
+
+    <!-- FORM -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox spacing="20">
+                <padding>
+                    <Insets top="20" right="30" bottom="30" left="30"/>
+                </padding>
+
+                <!-- Employé Selection -->
+                <VBox spacing="5">
+                    <Label text="Employé" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="employeCombo" promptText="Sélectionner un employé" maxWidth="Infinity" 
+                              style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8; -fx-font-size: 14px;"/>
+                </VBox>
+
+                <!-- Type Contrat -->
+                <VBox spacing="5">
+                    <Label text="Type de contrat" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="typeContratCombo" promptText="CDI" maxWidth="Infinity" 
+                              style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8; -fx-font-size: 14px;"/>
+                </VBox>
+
+                <!-- Poste -->
+                <VBox spacing="5">
+                    <Label text="Poste" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
+                    <TextField fx:id="posteField" promptText="Ex: Développeur Full Stack" 
+                               style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 10;"/>
+                </VBox>
+
+                <!-- Dates Row -->
+                <HBox spacing="20">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Date de début" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
+                        <DatePicker fx:id="dateDebutPicker" promptText="jj/mm/aaaa" maxWidth="Infinity" 
+                                    style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 4;"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Date de fin (CDD/Stage)" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
+                        <DatePicker fx:id="dateFinPicker" promptText="jj/mm/aaaa" maxWidth="Infinity" 
+                                    style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 4;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Salaire -->
+                <VBox spacing="5">
+                    <Label text="Salaire annuel brut" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
+                    <TextField fx:id="salaireField" promptText="Ex: 45000" 
+                               style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 10;"/>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- FOOTER ACTIONS -->
+    <bottom>
+        <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 20; -fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-width: 1 0 0 0;">
+            <Button text="Annuler" onAction="#handleAnnuler" 
+                    style="-fx-background-color: white; -fx-text-fill: #111827; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10 20; -fx-font-weight: bold; -fx-cursor: hand;"/>
+            <Button text="Créer le contrat" onAction="#handleCreer" 
+                    style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10 20; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

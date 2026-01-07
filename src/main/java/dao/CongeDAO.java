@@ -13,30 +13,30 @@ import java.util.concurrent.Future;
 import utils.DatabaseConnection;
 
 public class CongeDAO {
-    private static final String INSERT_SQL = "INSERT INTO conges (employee_id, type, date_debut, date_fin, statut, motif) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_SQL = "SELECT * FROM conges";
-    private static final String SELECT_BY_ID_SQL = "SELECT * FROM conges WHERE id = ?";
-    private static final String SELECT_BY_EMPLOYEE_ID = "SELECT * FROM conges WHERE employee_id = ?";
-    private static final String UPDATE_SQL = "UPDATE conges SET employee_id = ?, type = ?, date_debut = ?, date_fin = ?, statut = ?, motif = ? WHERE id = ?";
-    private static final String DELETE_SQL = "DELETE FROM conges WHERE id = ?";
+    private static final String INSERT_SQL = "INSERT INTO conge (employee_id, type, date_debut, date_fin, statut, motif, date_demande) VALUES (?, ?, ?, ?, ?, ?, NOW())";
+    private static final String SELECT_ALL_SQL = "SELECT * FROM conge";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM conge WHERE id = ?";
+    private static final String SELECT_BY_EMPLOYEE_ID = "SELECT * FROM conge WHERE employee_id = ?";
+    private static final String UPDATE_SQL = "UPDATE conge SET employee_id = ?, type = ?, date_debut = ?, date_fin = ?, statut = ?, motif = ?, date_demande = ? WHERE id = ?";
+    private static final String DELETE_SQL = "DELETE FROM conge WHERE id = ?";
 
     public void save(Conge conge) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setInt(1, conge.getEmployeeId());
             stmt.setString(2, conge.getType().name());
             stmt.setDate(3, new java.sql.Date(conge.getDateDebut().getTime()));
             stmt.setDate(4, new java.sql.Date(conge.getDateFin().getTime()));
             stmt.setString(5, conge.getStatut().name());
             stmt.setString(6, conge.getMotif());
-            
+
             int affectedRows = stmt.executeUpdate();
-            
+
             if (affectedRows == 0) {
                 throw new SQLException("Échec de la création du congé.");
             }
-            
+
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     conge.setId(generatedKeys.getInt(1));
@@ -52,11 +52,11 @@ public class CongeDAO {
 
     public List<Conge> findAll() {
         List<Conge> conges = new ArrayList<>();
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_SQL);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_SQL);
+                ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 conges.add(mapResultSetToConge(rs));
             }
@@ -64,14 +64,14 @@ public class CongeDAO {
             e.printStackTrace();
             throw new RuntimeException("Erreur lors de la récupération des congés", e);
         }
-        
+
         return conges;
     }
 
     public Conge findById(int id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
+
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -87,10 +87,10 @@ public class CongeDAO {
 
     public List<Conge> findByEmployeeId(int employeeId) {
         List<Conge> conges = new ArrayList<>();
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_EMPLOYEE_ID)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(SELECT_BY_EMPLOYEE_ID)) {
+
             stmt.setInt(1, employeeId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -101,22 +101,27 @@ public class CongeDAO {
             e.printStackTrace();
             throw new RuntimeException("Erreur lors de la recherche des congés par ID employé", e);
         }
-        
+
         return conges;
     }
 
     public void update(Conge conge) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UPDATE_SQL)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(UPDATE_SQL)) {
+
             stmt.setInt(1, conge.getEmployeeId());
             stmt.setString(2, conge.getType().name());
             stmt.setDate(3, new java.sql.Date(conge.getDateDebut().getTime()));
             stmt.setDate(4, new java.sql.Date(conge.getDateFin().getTime()));
             stmt.setString(5, conge.getStatut().name());
             stmt.setString(6, conge.getMotif());
-            stmt.setInt(7, conge.getId());
-            
+            if (conge.getDateDemande() != null) {
+                stmt.setDate(7, new java.sql.Date(conge.getDateDemande().getTime()));
+            } else {
+                stmt.setDate(7, new java.sql.Date(System.currentTimeMillis()));
+            }
+            stmt.setInt(8, conge.getId());
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -126,8 +131,8 @@ public class CongeDAO {
 
     public void delete(int id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(DELETE_SQL)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(DELETE_SQL)) {
+
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -145,6 +150,7 @@ public class CongeDAO {
         conge.setDateFin(rs.getDate("date_fin"));
         conge.setStatut(Conge.StatutConge.valueOf(rs.getString("statut")));
         conge.setMotif(rs.getString("motif"));
+        conge.setDateDemande(rs.getDate("date_demande"));
         return conge;
     }
 
@@ -173,12 +179,12 @@ public class CongeDAO {
     // Méthode utilitaire pour mettre à jour le statut d'un congé
     public void updateStatus(int congeId, Conge.StatutConge newStatus) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                 "UPDATE conges SET statut = ? WHERE id = ?")) {
-            
+                PreparedStatement stmt = conn.prepareStatement(
+                        "UPDATE conge SET statut = ? WHERE id = ?")) {
+
             stmt.setString(1, newStatus.name());
             stmt.setInt(2, congeId);
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

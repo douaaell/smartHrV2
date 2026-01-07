@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.EmployeController"
+            stylesheets="@../css/main.css">
+
+    <!-- TOP : Header & Actions -->
+    <top>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="20" right="30" bottom="20" left="30"/>
+            </padding>
+
+            <!-- Toolbar starts here -->
+
+            <!-- Toolkit Toolbar -->
+            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+                <!-- Search -->
+                <TextField fx:id="searchField" promptText="🔍 Rechercher..." prefWidth="250" style="-fx-background-radius: 6; -fx-border-color: #e2e8f0; -fx-border-radius: 6; -fx-padding: 8;"/>
+
+                <!-- Department Filter -->
+                <ComboBox fx:id="departementFilter" promptText="Tous les départements" prefWidth="200" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 6; -fx-padding: 2;"/>
+
+                <!-- Contract Filter (New) -->
+                <ComboBox fx:id="contractFilter" promptText="Tous les contrats" prefWidth="180" style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-border-radius: 6; -fx-padding: 2;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Export Button -->
+                <Button text="📥 Exporter CSV" onAction="#exportToCsv" style="-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 16;"/>
+
+                <!-- Add Button -->
+                <Button text="+ Ajouter un employé" onAction="#ajouterEmploye" style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 8 16;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CENTER : Tableau des employés -->
+    <center>
+        <VBox spacing="10" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="0" right="15" bottom="15" left="15"/>
+            </padding>
+            
+            <!-- Tableau des employés -->
+            <TableView fx:id="tableEmployes" VBox.vgrow="ALWAYS" styleClass="data-table">
+                <columns>
+                    <TableColumn text="Nom" fx:id="colNom" prefWidth="200"/>
+                    <TableColumn text="Email" fx:id="colEmail" prefWidth="200"/>
+                    <TableColumn text="Département" fx:id="colDepartement" prefWidth="120"/>
+                    <TableColumn text="Poste" fx:id="colPosition" prefWidth="150"/>
+                    <TableColumn text="Type" fx:id="colType" prefWidth="100"/>
+                    <TableColumn text="Statut" fx:id="colStatut" prefWidth="100"/>
+                    <TableColumn text="Actions" fx:id="colActions" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+</BorderPane>

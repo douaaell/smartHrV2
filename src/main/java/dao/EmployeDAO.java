@@ -10,10 +10,13 @@ import java.util.List;
 public class EmployeDAO {
 
     // Ajouter un employé
-    public void addEmploye(Employe e) {
-        String sql = "INSERT INTO employe (id, nom, prenom, email, password, departement, position) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public boolean addEmploye(Employe e) {
+        String sql = "INSERT INTO employe (id, nom, prenom, email, password, departement, position, telephone, adresse, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            System.out.println("🔄 Tentative d'ajout d'employé : " + e.getNom() + " " + e.getPrenom());
+
             stmt.setInt(1, e.getId());
             stmt.setString(2, e.getNom());
             stmt.setString(3, e.getPrenom());
@@ -21,24 +24,42 @@ public class EmployeDAO {
             stmt.setString(5, e.getPassword());
             stmt.setString(6, e.getDepartement());
             stmt.setString(7, e.getPosition());
-            stmt.executeUpdate();
+            stmt.setString(8, e.getTelephone());
+            stmt.setString(9, e.getAdresse());
+            stmt.setString(10, e.getRole());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("✅ Employé ajouté avec succès dans la base de données !");
+                return true;
+            } else {
+                System.out.println("⚠️ Aucune ligne n'a été affectée lors de l'ajout");
+                return false;
+            }
+
         } catch (SQLException ex) {
+            System.err.println("❌ Erreur lors de l'ajout de l'employé : " + ex.getMessage());
             ex.printStackTrace();
+            return false;
         }
     }
 
     // Modifier un employé
     public void updateEmploye(Employe e) {
-        String sql = "UPDATE employe SET nom=?, prenom=?, email=?, password=?, departement=?, position=? WHERE id=?";
+        String sql = "UPDATE employe SET nom=?, prenom=?, email=?, password=?, departement=?, position=?, telephone=?, adresse=?, role=? WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, e.getNom());
             stmt.setString(2, e.getPrenom());
             stmt.setString(3, e.getEmail());
             stmt.setString(4, e.getPassword());
             stmt.setString(5, e.getDepartement());
             stmt.setString(6, e.getPosition());
-            stmt.setInt(7, e.getId());
+            stmt.setString(7, e.getTelephone());
+            stmt.setString(8, e.getAdresse());
+            stmt.setString(9, e.getRole());
+            stmt.setInt(10, e.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -49,7 +70,7 @@ public class EmployeDAO {
     public void deleteEmploye(int id) {
         String sql = "DELETE FROM employe WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
@@ -62,9 +83,23 @@ public class EmployeDAO {
         List<Employe> list = new ArrayList<>();
         String sql = "SELECT * FROM employe";
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
+                // Handle potential missing columns gracefully for display if DB isn't updated
+                // yet?
+                // No, standard path.
+                String telephone = "";
+                String adresse = "";
+                try {
+                    telephone = rs.getString("telephone");
+                } catch (SQLException ignore) {
+                }
+                try {
+                    adresse = rs.getString("adresse");
+                } catch (SQLException ignore) {
+                }
+
                 Employe e = new Employe(
                         rs.getInt("id"),
                         rs.getString("nom"),
@@ -72,8 +107,22 @@ public class EmployeDAO {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("departement"),
-                        rs.getString("position")
-                );
+                        rs.getString("position"),
+                        telephone,
+                        adresse);
+
+                // Récupérer et définir le rôle explicitement
+                String role = null;
+                try {
+                    role = rs.getString("role");
+                } catch (SQLException ignore) {
+                }
+                if (role != null) {
+                    e.setRole(role);
+                } else {
+                    e.setRole("EMPLOYE"); // Valeur par défaut
+                }
+
                 list.add(e);
             }
         } catch (SQLException ex) {
@@ -87,10 +136,21 @@ public class EmployeDAO {
         List<Employe> list = new ArrayList<>();
         String sql = "SELECT * FROM employe WHERE nom LIKE ?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, "%" + nom + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                String telephone = "";
+                String adresse = "";
+                try {
+                    telephone = rs.getString("telephone");
+                } catch (SQLException ignore) {
+                }
+                try {
+                    adresse = rs.getString("adresse");
+                } catch (SQLException ignore) {
+                }
+
                 list.add(new Employe(
                         rs.getInt("id"),
                         rs.getString("nom"),
@@ -98,8 +158,9 @@ public class EmployeDAO {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("departement"),
-                        rs.getString("position")
-                ));
+                        rs.getString("position"),
+                        telephone,
+                        adresse));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -8,7 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.RHEmployeController"
+            fx:controller="controller.EmployeController"
              stylesheets="@../css/employe.css">
 
     <!-- TOP : Actions -->
@@ -25,21 +25,59 @@
         </HBox>
     </top>
 
-    <!-- CENTER : Table -->
+    <!-- CENTER : Table + Formulaire -->
     <center>
-        <TableView fx:id="tableEmployes">
-
-            <columns>
-                <TableColumn text="ID" fx:id="colId"/>
-                <TableColumn text="Nom" fx:id="colNom"/>
-                <TableColumn text="Prénom" fx:id="colPrenom"/>
-                <TableColumn text="Email" fx:id="colEmail"/>
-                <TableColumn text="Département" fx:id="colDepartement"/>
-                <TableColumn text="Position" fx:id="colPosition"/>
-                <TableColumn text="Actions" fx:id="colActions"/>
-            </columns>
-
-        </TableView>
+        <VBox spacing="10">
+            <!-- Formulaire d'ajout -->
+            <GridPane hgap="10" vgap="10" styleClass="form-container">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                
+                <Label text="Nom:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="nomField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                
+                <Label text="Prénom:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="prenomField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                
+                <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="emailField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                
+                <Label text="Mot de passe:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <PasswordField fx:id="passwordField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                
+                <Label text="Département:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="departementCombo" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                
+                <Label text="Position:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="positionField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                
+                <Label text="Rôle:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="roleCombo" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                
+                <HBox spacing="10" GridPane.rowIndex="7" GridPane.columnIndex="1" alignment="CENTER_RIGHT">
+                    <Button text="Ajouter Employé" onAction="#ajouterEmploye" styleClass="primary-btn"/>
+                    <Button text="Effacer" onAction="#clearFields" styleClass="secondary-btn"/>
+                </HBox>
+            </GridPane>
+            
+            <!-- Séparateur -->
+            <Separator style="-fx-padding: 10px;"/>
+            
+            <!-- Tableau des employés -->
+            <TableView fx:id="tableEmployes" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn text="ID" fx:id="colId"/>
+                    <TableColumn text="Nom" fx:id="colNom"/>
+                    <TableColumn text="Prénom" fx:id="colPrenom"/>
+                    <TableColumn text="Email" fx:id="colEmail"/>
+                    <TableColumn text="Département" fx:id="colDepartement"/>
+                    <TableColumn text="Position" fx:id="colPosition"/>
+                    <TableColumn text="Rôle" fx:id="colRole"/>
+                    <TableColumn text="Actions" fx:id="colActions"/>
+                </columns>
+            </TableView>
+        </VBox>
     </center>
 
 </BorderPane>

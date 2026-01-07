@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="700" prefHeight="600" style="-fx-background-color: #f5f5f5;">
+
+    <!-- Header -->
+    <top>
+        <VBox style="-fx-background-color: white; -fx-padding: 20;">
+            <Label text="Détails de l'employé" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+        </VBox>
+    </top>
+
+    <!-- Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <VBox spacing="20" style="-fx-padding: 30; -fx-background-color: white; -fx-background-radius: 8;">
+                
+                <!-- Section 1: Informations personnelles -->
+                <GridPane hgap="40" vgap="20">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/>
+                        <ColumnConstraints percentWidth="50"/>
+                    </columnConstraints>
+
+                    <!-- Nom -->
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label text="Nom" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblNom" text="Marie Dubois" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                    <!-- Email -->
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label text="Email" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblEmail" text="marie.dubois@smarthr.com" style="-fx-font-size: 16px; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                    <!-- Téléphone -->
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label text="Téléphone" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblTelephone" text="06 12 34 56 78" style="-fx-font-size: 16px; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                    <!-- Adresse -->
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label text="Adresse" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblAdresse" text="45 Avenue Victor Hugo, 75016 Paris" style="-fx-font-size: 16px; -fx-text-fill: #1e293b;" wrapText="true"/>
+                    </VBox>
+
+                    <!-- Département -->
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <Label text="Département" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblDepartement" text="Développement" style="-fx-font-size: 16px; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                    <!-- Poste -->
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Label text="Poste" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblPoste" text="Développeur Senior" style="-fx-font-size: 16px; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                    <!-- Type de contrat -->
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                        <Label text="Type de contrat" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <HBox>
+                            <Label fx:id="lblTypeContrat" text="CDI" 
+                                   style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-background-radius: 12; -fx-padding: 4 12; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Date d'embauche -->
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <Label text="Date d'embauche" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblDateEmbauche" text="15/03/2023" style="-fx-font-size: 16px; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                    <!-- Salaire annuel -->
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                        <Label text="Salaire annuel" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblSalaire" text="55000 €" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                    <!-- Rôle -->
+                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <Label text="Rôle" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                        <Label fx:id="lblRole" text="EMPLOYE" style="-fx-font-size: 16px; -fx-text-fill: #1e293b;"/>
+                    </VBox>
+
+                </GridPane>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- Footer Buttons -->
+    <bottom>
+        <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 20; -fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-width: 1 0 0 0;">
+            <Button text="Fermer" onAction="#handleClose" 
+                    style="-fx-background-color: white; -fx-text-fill: #64748b; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10 30; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"/>
+            <Button text="Modifier" onAction="#handleEdit" 
+                    style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 10 30; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

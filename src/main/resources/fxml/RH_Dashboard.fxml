@@ -4,73 +4,155 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.RHDashboardController">
+            fx:controller="controller.RHDashboardController"
+            fx:id="mainContentArea"
+            stylesheets="@../css/main.css">
 
     <!-- Menu Latéral -->
     <left>
-        <VBox spacing="10" styleClass="sidebar" alignment="TOP_CENTER" prefWidth="200">
-            <Label text="SmartRH" styleClass="app-title"/>
-            <Button text="Dashboard" styleClass="sidebar-btn"/>	
-            <Button text="Employés" styleClass="sidebar-btn"   onAction="#ouvrirEmployes"/>
-            <Button text="Contrats" styleClass="sidebar-btn"/>
-            <Button text="Congés" styleClass="sidebar-btn"/>
-            <Button text="Paramètres" styleClass="sidebar-btn"/>
-            <Button text="Déconnexion" styleClass="sidebar-btn"/>
+        <VBox spacing="10" styleClass="sidebar" alignment="TOP_CENTER" prefWidth="240">
+            <VBox spacing="5" style="-fx-padding: 0 0 30 25;" alignment="TOP_LEFT">
+                <Label text="SmartHR+" styleClass="app-title" style="-fx-padding: 0; -fx-text-fill: #1a73e8;"/>
+                <Label text="Espace RH" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+            </VBox>
+            
+            <!-- Navigation -->
+            <VBox spacing="5" styleClass="nav-menu">
+                <Button fx:id="dashboardBtn" text="Tableau de bord" styleClass="sidebar-btn" onAction="#handleDashboard"/>
+                <Button fx:id="employesBtn" text="Employés" styleClass="sidebar-btn" onAction="#ouvrirEmployes"/>
+                <Button fx:id="contratsBtn" text="Contrats" styleClass="sidebar-btn" onAction="#handleContrats"/>
+                <Button fx:id="congesBtn" text="Congés" styleClass="sidebar-btn" onAction="#handleConges"/>
+                <Button fx:id="justificatifsBtn" text="Justificatifs" styleClass="sidebar-btn" onAction="#handleJustificatifs"/>
+                <Button fx:id="importExportBtn" text="Import/Export" styleClass="sidebar-btn" onAction="#handleImportExport"/>
+            </VBox>
+            
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS"/>
+            
+            <!-- User Info (Same style as employee) -->
+            <VBox spacing="5" style="-fx-padding: 20;" alignment="TOP_LEFT">
+                <Label fx:id="lblAdminName" text="Administrateur RH" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                <Label fx:id="lblAdminEmail" text="rh@smarthr.com" style="-fx-text-fill: gray; -fx-font-size: 11px;"/>
+            </VBox>
+            
+            <!-- Déconnexion -->
+            <Button text="Déconnexion" styleClass="sidebar-btn" style="-fx-text-fill: #dc2626; -fx-background-color: transparent;" onAction="#handleLogout"/>
         </VBox>
     </left>
 
     <!-- Zone principale -->
     <center>
-       <VBox spacing="40" VBox.vgrow="ALWAYS">
-
-            <!-- ✅ correction UNIQUE ici -->
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
-
+        <VBox style="-fx-background-color: transparent;">
             <!-- Header -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Tableau de Bord RH" styleClass="header-title"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label text="Bienvenue, RH Admin" styleClass="header-subtitle"/>
-            </HBox>
-
-            <!-- Cards principales -->
-            <HBox spacing="40" alignment="CENTER" HBox.hgrow="ALWAYS">
-                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
-                    <Label text="120" styleClass="card-number"/>
-                    <Label text="Employés" styleClass="card-title"/>
-                </VBox>
-                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
-                    <Label text="95" styleClass="card-number"/>
-                    <Label text="Contrats Actifs" styleClass="card-title"/>
-                </VBox>
-                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
-                    <Label text="8" styleClass="card-number"/>
-                    <Label text="Congés en Attente" styleClass="card-title"/>
-                </VBox>
-                <VBox styleClass="card" HBox.hgrow="ALWAYS" alignment="CENTER">
-                    <Label text="5" styleClass="card-number"/>
-                    <Label text="Contrats Expirant" styleClass="card-title"/>
+            <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 30 40; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 10, 0, 0, 4);">
+                <VBox spacing="5">
+                    <Label fx:id="lblPageTitle" text="Tableau de bord" styleClass="header-title"/>
+                    <Label fx:id="lblPageSubtitle" text="Vue d'ensemble de la plateforme SmartHR+" 
+                           styleClass="header-subtitle" style="-fx-font-size: 14px;"/>
                 </VBox>
             </HBox>
 
-            <!-- Graphiques -->
-            <HBox spacing="20" HBox.hgrow="ALWAYS">
-                <VBox styleClass="chart-card" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
-                    <Label text="Répartition des Employés par Département"/>
-                     <StackPane fx:id="pieChartContainer" VBox.vgrow="ALWAYS"  minHeight="300"/>
-                </VBox>
-                <VBox styleClass="chart-card"  VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
-                    <Label text="Congés Pris par Mois"/>
-                   <StackPane fx:id="barChartContainer" VBox.vgrow="ALWAYS"  minHeight="300"/>
-                </VBox>
-            </HBox>
+            <!-- Content -->
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+                <VBox spacing="25" styleClass="main-content">
+                    
+                    <!-- Cards principales -->
+                    <HBox spacing="20" alignment="CENTER" prefHeight="120">
+                        <!-- Card 1 - Employés -->
+                        <VBox styleClass="stat-card, card-blue" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="100">
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox alignment="CENTER_LEFT">
+                                    <Label fx:id="lblTotalEmployes" text="7" styleClass="stat-number"/>
+                                    <Label text="Total Employés Actifs" styleClass="stat-label"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
 
+                        <!-- Card 2 - Congés -->
+                        <VBox styleClass="stat-card, card-orange" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="100">
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox alignment="CENTER_LEFT">
+                                    <Label fx:id="lblCongesAttente" text="2" styleClass="stat-number"/>
+                                    <Label text="Congés en attente" styleClass="stat-label"/>
+                                </VBox>
+                            </HBox>
+                            <Button text="Gérer" styleClass="card-btn" onAction="#handleConges"/>
+                        </VBox>
+
+                        <!-- Card 3 - Contrats -->
+                        <VBox styleClass="stat-card, card-green" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="100">
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox alignment="CENTER_LEFT">
+                                    <Label fx:id="lblContratsActifs" text="7" styleClass="stat-number"/>
+                                    <Label text="Contrats Actifs" styleClass="stat-label"/>
+                                </VBox>
+                            </HBox>
+                            <Button text="Actifs" styleClass="card-btn" onAction="#handleContrats"/>
+                        </VBox>
+
+                        <!-- Card 4 - Candidatures -->
+                        <VBox styleClass="stat-card, card-purple" HBox.hgrow="ALWAYS" alignment="CENTER" prefHeight="100">
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox alignment="CENTER_LEFT">
+                                    <Label fx:id="lblContratsExpirant" text="1" styleClass="stat-number"/>
+                                    <Label text="Candidatures nouvelles" styleClass="stat-label"/>
+                                </VBox>
+                            </HBox>
+                            <Button text="Voir toutes" styleClass="card-btn" onAction="#ouvrirEmployes"/>
+                        </VBox>
+                    </HBox>
+
+
+                    <!-- Section Statistical Charts -->
+                    <VBox spacing="15">
+                        <Label text="Analytiques" styleClass="section-title"/>
+                        <HBox spacing="20">
+                            <!-- Pie Chart Card -->
+                            <VBox styleClass="recent-section" HBox.hgrow="ALWAYS" spacing="10" minHeight="350">
+                                <Label text="Répartition des Employés par Département" style="-fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+                                <StackPane fx:id="pieChartContainer" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;"/>
+                            </VBox>
+                            
+                            <!-- Un vide à droite pour ne pas prendre toute la largeur si vous voulez le garder centré ou autre -->
+                            <Region HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Sections récentes -->
+                    <HBox spacing="20">
+                        <!-- Demandes de congés récentes -->
+                        <VBox styleClass="recent-section" HBox.hgrow="ALWAYS" spacing="15" prefHeight="200">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="Demandes de congés récentes" styleClass="section-title"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="Voir tout" styleClass="view-all-btn"/>
+                            </HBox>
+                            
+                            <VBox fx:id="recentLeavesList" spacing="10" styleClass="recent-list">
+                                <!-- Dynamically populated -->
+                            </VBox>
+                        </VBox>
+
+                        <!-- Contrats récents -->
+                        <VBox styleClass="recent-section" HBox.hgrow="ALWAYS" spacing="15" prefHeight="200">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="Contrats récents" styleClass="section-title"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="Voir tout" styleClass="view-all-btn" onAction="#handleContrats"/>
+                            </HBox>
+                            
+                            <VBox fx:id="recentContractsList" spacing="10" styleClass="recent-list">
+                                <!-- Dynamically populated -->
+                            </VBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
         </VBox>
     </center>
 

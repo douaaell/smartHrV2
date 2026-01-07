@@ -4,7 +4,7 @@ import dao.CongeDAO;
 import model.Conge;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,11 +29,11 @@ public class CongeService {
         if (conge.getType().name().equals("ANNUEL")) {
             int joursDemandes = calculerJoursOuvres(conge);
             int joursRestants = getRemainingVacationDays(conge.getEmployeeId());
-            
+
             if (joursDemandes > joursRestants) {
                 throw new IllegalStateException(
-                    String.format("Nombre de jours demandés (%d) dépasse les jours restants (%d)", 
-                    joursDemandes, joursRestants));
+                        String.format("Nombre de jours demandés (%d) dépasse les jours restants (%d)",
+                                joursDemandes, joursRestants));
             }
         }
 
@@ -54,13 +54,11 @@ public class CongeService {
     }
 
     private int calculerJoursOuvres(Conge conge) {
-        LocalDate debut = conge.getDateDebut().toInstant()
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate();
-        LocalDate fin = conge.getDateFin().toInstant()
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate();
-        
+        // Convert java.util.Date to LocalDate using constructor (sql.Date extends
+        // util.Date)
+        LocalDate debut = new java.sql.Date(conge.getDateDebut().getTime()).toLocalDate();
+        LocalDate fin = new java.sql.Date(conge.getDateFin().getTime()).toLocalDate();
+
         int jours = 0;
         while (!debut.isAfter(fin)) {
             if (debut.getDayOfWeek().getValue() < 6) { // Lundi à Vendredi
@@ -77,25 +75,25 @@ public class CongeService {
 
     public List<Conge> findCongesByEmployeeId(int employeeId) {
         return congeDAO.findByEmployeeId(employeeId).stream()
-            .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
-            .collect(Collectors.toList());
+                .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
+                .collect(Collectors.toList());
     }
 
     public List<Conge> findAllConges() {
         return congeDAO.findAll().stream()
-            .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
-            .collect(Collectors.toList());
+                .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
+                .collect(Collectors.toList());
     }
 
     public List<Conge> findCongesByStatus(Conge.StatutConge statut) {
         if (statut == null) {
             throw new IllegalArgumentException("Le statut ne peut pas être null");
         }
-        
+
         return congeDAO.findAll().stream()
-            .filter(c -> c.getStatut() == statut)
-            .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
-            .collect(Collectors.toList());
+                .filter(c -> c.getStatut() == statut)
+                .sorted((c1, c2) -> c2.getDateDebut().compareTo(c1.getDateDebut()))
+                .collect(Collectors.toList());
     }
 
     public List<Conge> findPendingConges() {
@@ -118,13 +116,13 @@ public class CongeService {
         if (conge == null) {
             throw new IllegalArgumentException("Aucun congé trouvé avec l'ID: " + congeId);
         }
-        
+
         conge.setStatut(statut);
-        
+
         if (motifRefus != null && !motifRefus.isEmpty()) {
             conge.setMotifRefus(motifRefus);
         }
-        
+
         congeDAO.update(conge);
     }
 
@@ -138,11 +136,11 @@ public class CongeService {
     public int getRemainingVacationDays(int employeeId) {
         List<Conge> conges = congeDAO.findByEmployeeId(employeeId);
         int joursPris = conges.stream()
-            .filter(c -> c.getStatut() == Conge.StatutConge.VALIDE && 
+                .filter(c -> c.getStatut() == Conge.StatutConge.VALIDE &&
                         c.getType() == Conge.TypeConge.ANNUEL)
-            .mapToInt(this::calculerJoursOuvres)
-            .sum();
-            
+                .mapToInt(this::calculerJoursOuvres)
+                .sum();
+
         return Math.max(0, JOURS_CONGES_ANNUELS - joursPris);
     }
 

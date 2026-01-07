@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EmpMonProfilController" styleClass="main-content">
+    
+    <!-- Profile Content -->
+
+    <HBox spacing="20">
+        <!-- Carte Profil (Left) -->
+        <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="15">
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Circle fx:id="avatarCircle" radius="30" fill="DODGERBLUE"/> <!-- Placeholder for Avatar -->
+                <VBox spacing="2">
+                    <Label fx:id="lblNom" text="Jean Dupont" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label fx:id="lblPoste" text="Développeur Full Stack" styleClass="info-text"/>
+                    <Label fx:id="lblDepartement" text="Développement" styleClass="info-text"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Modifier" styleClass="primary-btn" onAction="#handleEditProfile"/>
+            </HBox>
+
+            <HBox spacing="30">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Email" styleClass="field-label"/>
+                    <Label fx:id="lblEmail" text="jean.dupont@smarthr.com" styleClass="field-value"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Téléphone" styleClass="field-label"/>
+                    <Label fx:id="lblTelephone" text="06 12 34 56 78" styleClass="field-value"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="5">
+                <Label text="Adresse" styleClass="field-label"/>
+                <Label fx:id="lblAdresse" text="123 Rue de la Paix, 75001 Paris" styleClass="field-value"/>
+            </VBox>
+
+            <HBox spacing="30">
+                 <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Type de contrat" styleClass="field-label"/>
+                    <Label fx:id="lblContratType" text="CDI" style="-fx-background-color: #DEF7EC; -fx-text-fill: #03543F; -fx-padding: 3 8; -fx-background-radius: 10;"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Date d'embauche" styleClass="field-label"/>
+                    <Label fx:id="lblDateEmbauche" text="15/03/2023" styleClass="field-value"/>
+                </VBox>
+            </HBox>
+             <HBox spacing="30">
+
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Salaire annuel brut" styleClass="field-label"/>
+                    <Label fx:id="lblSalaire" text="55 000 €" styleClass="field-value"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Colonne Droite (Stats + Actions) -->
+        <VBox spacing="20" prefWidth="350">
+            <!-- Solde de congés -->
+            <VBox styleClass="card" spacing="10">
+                <Label text="Solde de congés" styleClass="card-header"/>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Congés payés" style="-fx-font-size: 13px;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblCP" text="17 jours" style="-fx-text-fill: #1a73e8; -fx-font-weight: bold;"/>
+                </HBox>
+                <ProgressBar fx:id="progressCP" progress="0.68" maxWidth="Infinity" style="-fx-accent: #1a73e8;"/>
+                <Label fx:id="lblCpDetails" text="8 utilisés sur 25" style="-fx-font-size: 11px; -fx-text-fill: gray;"/>
+
+
+            </VBox>
+
+            <!-- Actions Rapides -->
+            <VBox styleClass="card" spacing="10">
+                <Label text="Actions rapides" styleClass="card-header"/>
+                <Button text="🏖 Demander un congé" maxWidth="Infinity" styleClass="secondary-btn" onAction="#handleDemandeConge"/>
+                <Button text="📄 Justifier une absence" maxWidth="Infinity" styleClass="secondary-btn" style="-fx-background-color: #F0FFF4; -fx-text-fill: #188038;" onAction="#handleJustifierAbsence"/>
+                <Button text="✏ Modifier mes infos" maxWidth="Infinity" styleClass="secondary-btn" style="-fx-background-color: #F3F0FF; -fx-text-fill: #7C3AED;" onAction="#handleEditProfile"/>
+            </VBox>
+        </VBox>
+    </HBox>
+
+    <!-- Documents -->
+    <VBox styleClass="card" spacing="10">
+        <Label text="Documents" styleClass="card-header"/>
+        <VBox fx:id="documentsList" spacing="10">
+            <!-- Documents chargés dynamiquement -->
+        </VBox>
+    </VBox>
+
+</VBox>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="700" prefHeight="650"
+            style="-fx-background-color: white;">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #4CAF50; -fx-padding: 20;">
+            <Label text="Modifier un employé" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <!-- Form Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-padding: 0;">
+            <content>
+                <VBox spacing="20" style="-fx-background-color: white;">
+                    <padding>
+                        <Insets top="30" right="40" bottom="30" left="40"/>
+                    </padding>
+
+                    <GridPane hgap="20" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                        </columnConstraints>
+
+                        <!-- Row 0: Nom & Prénom -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Nom *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <TextField fx:id="nomField" promptText="Entrez le nom" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Prénom *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <TextField fx:id="prenomField" promptText="Entrez le prénom" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+
+                        <!-- Row 1: Email & Téléphone -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Email *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <TextField fx:id="emailField" promptText="exemple@email.com" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Téléphone *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <TextField fx:id="telephoneField" promptText="06 12 34 56 78" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+
+                        <!-- Row 2: Adresse & Département -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Adresse" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <TextField fx:id="adresseField" promptText="Adresse complète" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Label text="Département *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <ComboBox fx:id="departementCombo" promptText="Sélectionnez un département" maxWidth="Infinity" style="-fx-background-radius: 6; -fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 4;"/>
+                        </VBox>
+
+                        <!-- Row 3: Poste & Rôle -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                            <Label text="Poste *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <TextField fx:id="positionField" promptText="Ex: Développeur" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <Label text="Rôle *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <ComboBox fx:id="roleCombo" promptText="Sélectionnez un rôle" maxWidth="Infinity" style="-fx-background-radius: 6; -fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 4;"/>
+                        </VBox>
+
+                        <!-- Row 4: Mot de passe & Type contrat -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                            <Label text="Mot de passe *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <PasswordField fx:id="passwordField" promptText="Mot de passe" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                            <Label text="Type de contrat *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <ComboBox fx:id="typeContratCombo" promptText="CDI, CDD..." maxWidth="Infinity" style="-fx-background-radius: 6; -fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 4;"/>
+                        </VBox>
+
+                        <!-- Row 5: Dates (Début & Fin) -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                            <Label text="Date de début *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <DatePicker fx:id="dateDebutPicker" maxWidth="Infinity" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6;"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                            <Label text="Date de fin (Si CDD/Stage)" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <DatePicker fx:id="dateFinPicker" maxWidth="Infinity" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6;"/>
+                        </VBox>
+                        
+                        
+                        <!-- Row 6: Salaire (Full Width) -->
+                        <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2">
+                            <Label text="Salaire annuel brut (€) *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <TextField fx:id="salaireField" promptText="0.00" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
+                        </VBox>
+
+                    </GridPane>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- Footer with buttons -->
+    <bottom>
+        <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-background-color: #f9fafb; -fx-padding: 20; -fx-border-color: #e5e7eb; -fx-border-width: 1 0 0 0;">
+            <Button text="Annuler" onAction="#handleCancel" 
+                    style="-fx-background-color: white; -fx-text-fill: #374151; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-weight: bold;"/>
+            <Button text="Enregistrer" onAction="#handleSave" 
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-weight: bold;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

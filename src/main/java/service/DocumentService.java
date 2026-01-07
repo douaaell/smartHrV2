@@ -40,10 +40,6 @@ public class DocumentService {
         return documentDao.findByEmployeeEmail(email);
     }
 
-    public List<Document> findAllDocuments() {
-        return documentDao.findAll();
-    }
-
     public void updateDocument(Document document) {
         if (document == null || document.getId() == 0) {
             throw new IllegalArgumentException("Document invalide pour la mise à jour");
@@ -53,9 +49,13 @@ public class DocumentService {
 
     public void deleteDocument(int id) {
         if (id <= 0) {
-            throw new IllegalArgumentException("ID de document invalide");
+            throw new IllegalArgumentException("ID invalide pour la suppression");
         }
         documentDao.delete(id);
+    }
+
+    public List<Document> findAllDocuments() {
+        return documentDao.findAll();
     }
 
     public void exportToCsv(String filePath) {

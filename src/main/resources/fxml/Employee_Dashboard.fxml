@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../css/employee_dashboard.css"
+            fx:controller="controller.EmployeeDashboardController">
+
+    <!-- Menu Latéral -->
+    <left>
+        <VBox spacing="10" styleClass="sidebar" alignment="TOP_CENTER" prefWidth="240">
+            <VBox spacing="5" style="-fx-padding: 0 0 30 25;">
+                <Label text="SmartHR+" styleClass="app-title" style="-fx-padding: 0; -fx-text-fill: #1a73e8;"/>
+                <Label text="Espace Employé" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+            </VBox>
+
+            <Button fx:id="btnMonProfil" text="Mon Profil" styleClass="sidebar-btn" onAction="#showMonProfil"/>
+            <Button fx:id="btnMesConges" text="Mes Congés" styleClass="sidebar-btn" onAction="#showMesConges"/>
+            <Button fx:id="btnJustificatifs" text="Justificatifs" styleClass="sidebar-btn" onAction="#showJustificatifs"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+            
+            <VBox spacing="10" style="-fx-padding: 20;">
+                <Label fx:id="lblUserName" text="Jean Dupont" style="-fx-font-weight: bold;"/>
+                <Label fx:id="lblUserEmail" text="employe@smarthr.com" style="-fx-text-fill: gray; -fx-font-size: 11px;"/>
+            </VBox>
+            
+            <Button fx:id="btnLogout" text="Déconnexion" styleClass="sidebar-btn" style="-fx-text-fill: #dc2626;" onAction="#handleLogout"/>
+        </VBox>
+    </left>
+
+    <!-- Zone principale -->
+    <center>
+        <VBox style="-fx-background-color: transparent;">
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 30 40; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 10, 0, 0, 4);">
+                <VBox spacing="5">
+                    <Label fx:id="lblPageTitle" text="Mon Profil" styleClass="header-title"/>
+                    <Label fx:id="lblPageSubtitle" text="Gérez vos informations personnelles et votre compte" 
+                           styleClass="header-subtitle" style="-fx-font-size: 14px;"/>
+                </VBox>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+                <VBox fx:id="mainContent" spacing="30" styleClass="main-content">
+                    <!-- Content will be loaded here dynamically -->
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,0 +1,274 @@
+/* Main styling */
+.root {
+    -fx-font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    -fx-background-color: #f0f2f5;
+}
+
+/* Sidebar styling */
+.sidebar {
+    -fx-background-color: #ffffff;
+    -fx-padding: 30px 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+    -fx-min-width: 240px;
+    -fx-max-width: 240px;
+    -fx-background-radius: 0 15px 15px 0;
+}
+
+.app-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1a73e8;
+    -fx-padding: 0 0 40px 25px;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5f6368;
+    -fx-font-size: 14px;
+    -fx-padding: 12px 25px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0 30px 30px 0;
+    -fx-pref-width: 200px;
+    -fx-margin: 4px 0;
+    -fx-font-weight: 500;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #f1f3f4;
+    -fx-text-fill: #1a73e8;
+}
+
+.sidebar-btn.active {
+    -fx-background-color: #e8f0fe;
+    -fx-text-fill: #1a73e8;
+    -fx-font-weight: 600;
+    -fx-border-radius: 0 30px 30px 0;
+}
+
+/* Main content area */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane>.viewport {
+    -fx-background-color: transparent;
+}
+
+.main-content {
+    -fx-padding: 30px 40px;
+    -fx-spacing: 25px;
+    -fx-background-color: transparent;
+}
+
+/* Header */
+.header-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212121;
+    -fx-padding: 0 0 25px 0;
+}
+
+/* Cards */
+.card {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.06), 15, 0, 0, 5);
+    -fx-padding: 25px;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-border-color: transparent;
+}
+
+.card-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #202124;
+    -fx-padding: 0 0 16px 0;
+}
+
+.card-content {
+    -fx-padding: 0;
+    -fx-spacing: 12px;
+}
+
+/* Info text */
+.info-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f6368;
+    -fx-padding: 4px 0;
+}
+
+/* Leave section */
+.leave-remaining {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1a73e8;
+    -fx-font-weight: 600;
+    -fx-padding: 0 0 12px 0;
+}
+
+.leave-list {
+    -fx-padding: 8px 0 0 0;
+    -fx-spacing: 12px;
+}
+
+.leave-item {
+    -fx-spacing: 12px;
+    -fx-alignment: center-left;
+}
+
+.leave-type {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f6368;
+    -fx-min-width: 80px;
+    -fx-font-weight: 500;
+}
+
+.leave-dates {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f6368;
+}
+
+.status-approved {
+    -fx-font-size: 12px;
+    -fx-text-fill: #188038;
+    -fx-background-color: #e6f4ea;
+    -fx-padding: 2px 8px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-font-weight: 500;
+}
+
+/* Contract section */
+.contract-item {
+    -fx-spacing: 12px;
+    -fx-alignment: center-left;
+}
+
+.contract-type {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f6368;
+    -fx-min-width: 40px;
+    -fx-font-weight: 500;
+}
+
+.contract-dates {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f6368;
+}
+
+.contract-type-large {
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #202124;
+}
+
+.contract-dates-large {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f6368;
+}
+
+/* Buttons */
+.primary-btn {
+    -fx-background-color: #1a73e8;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-padding: 10px 24px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #1765cc;
+    -fx-effect: dropshadow(three-pass-box, rgba(26, 115, 232, 0.3), 8, 0, 0, 2);
+}
+
+.secondary-btn {
+    -fx-background-color: #f1f3f4;
+    -fx-text-fill: #5f6368;
+    -fx-font-weight: 600;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.secondary-btn:hover {
+    -fx-background-color: #e8eaed;
+}
+
+.text-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1a73e8;
+    -fx-padding: 5px 0;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+}
+
+.text-btn:hover {
+    -fx-text-fill: #1557b0;
+    -fx-underline: true;
+}
+
+/* Form fields */
+.field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #5f6368;
+    -fx-padding: 4px 0;
+}
+
+.field-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #202124;
+    -fx-padding: 2px 0 8px 0;
+    -fx-font-weight: 500;
+}
+
+/* Layout helpers */
+HBox,
+VBox {
+    -fx-spacing: 16px;
+}
+
+/* Responsive layout */
+@media (max-width: 1200px) {
+    .card {
+        -fx-pref-width: 100%;
+    }
+}
+
+/* Scrollbar styling */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12px;
+    -fx-padding: 2px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #dadce0;
+    -fx-background-radius: 6px;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #bdc1c6;
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0 0 0 0;
+    -fx-shape: " ";
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}

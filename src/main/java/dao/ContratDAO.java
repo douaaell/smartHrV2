@@ -11,14 +11,14 @@ import java.util.List;
 public class ContratDAO {
 
     public void addContrat(Contrat c) {
-        String sql = "INSERT INTO contract (id, employee_email, type, start_date, end_date, salary, position, department, benefits, status, file_name_pdf) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO contrat (id, employee_email, type, start_date, end_date, salary, position, department, benefits, status, file_name_pdf) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, c.getId());
             stmt.setString(2, c.getEmployeeEmail());
             stmt.setString(3, c.getType());
-            stmt.setDate(4, Date.valueOf(c.getStartDate()));
-            stmt.setDate(5, Date.valueOf(c.getEndDate()));
+            stmt.setDate(4, c.getStartDate() != null ? Date.valueOf(c.getStartDate()) : null);
+            stmt.setDate(5, c.getEndDate() != null ? Date.valueOf(c.getEndDate()) : null);
             stmt.setDouble(6, c.getSalary());
             stmt.setString(7, c.getPosition());
             stmt.setString(8, c.getDepartment());
@@ -32,12 +32,12 @@ public class ContratDAO {
     }
 
     public void updateContrat(Contrat c) {
-        String sql = "UPDATE contract SET type=?, start_date=?, end_date=?, salary=?, position=?, department=?, benefits=?, status=?, file_name_pdf=? WHERE id=?";
+        String sql = "UPDATE contrat SET type=?, start_date=?, end_date=?, salary=?, position=?, department=?, benefits=?, status=?, file_name_pdf=? WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, c.getType());
-            stmt.setDate(2, Date.valueOf(c.getStartDate()));
-            stmt.setDate(3, Date.valueOf(c.getEndDate()));
+            stmt.setDate(2, c.getStartDate() != null ? Date.valueOf(c.getStartDate()) : null);
+            stmt.setDate(3, c.getEndDate() != null ? Date.valueOf(c.getEndDate()) : null);
             stmt.setDouble(4, c.getSalary());
             stmt.setString(5, c.getPosition());
             stmt.setString(6, c.getDepartment());
@@ -52,9 +52,9 @@ public class ContratDAO {
     }
 
     public void deleteContrat(String id) {
-        String sql = "DELETE FROM contract WHERE id=?";
+        String sql = "DELETE FROM contrat WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -64,24 +64,26 @@ public class ContratDAO {
 
     public List<Contrat> getAllContrats() {
         List<Contrat> list = new ArrayList<>();
-        String sql = "SELECT * FROM contract";
+        String sql = "SELECT * FROM contrat";
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
+                Date startDate = rs.getDate("start_date");
+                Date endDate = rs.getDate("end_date");
+
                 Contrat c = new Contrat(
                         rs.getString("id"),
                         rs.getString("employee_email"),
                         rs.getString("type"),
-                        rs.getDate("start_date").toLocalDate(),
-                        rs.getDate("end_date").toLocalDate(),
+                        startDate != null ? startDate.toLocalDate() : null,
+                        endDate != null ? endDate.toLocalDate() : null,
                         rs.getDouble("salary"),
                         rs.getString("position"),
                         rs.getString("department"),
                         rs.getString("benefits"),
                         rs.getString("status"),
-                        rs.getString("file_name_pdf")
-                );
+                        rs.getString("file_name_pdf"));
                 list.add(c);
             }
         } catch (SQLException e) {
@@ -92,25 +94,27 @@ public class ContratDAO {
 
     public List<Contrat> findContratsByEmployee(String email) {
         List<Contrat> list = new ArrayList<>();
-        String sql = "SELECT * FROM contract WHERE employee_email=?";
+        String sql = "SELECT * FROM contrat WHERE employee_email=?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                Date startDate = rs.getDate("start_date");
+                Date endDate = rs.getDate("end_date");
+
                 Contrat c = new Contrat(
                         rs.getString("id"),
                         rs.getString("employee_email"),
                         rs.getString("type"),
-                        rs.getDate("start_date").toLocalDate(),
-                        rs.getDate("end_date").toLocalDate(),
+                        startDate != null ? startDate.toLocalDate() : null,
+                        endDate != null ? endDate.toLocalDate() : null,
                         rs.getDouble("salary"),
                         rs.getString("position"),
                         rs.getString("department"),
                         rs.getString("benefits"),
                         rs.getString("status"),
-                        rs.getString("file_name_pdf")
-                );
+                        rs.getString("file_name_pdf"));
                 list.add(c);
             }
         } catch (SQLException e) {

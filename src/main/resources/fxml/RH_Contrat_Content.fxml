@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.RHContratController"
+      spacing="20" styleClass="main-content"
+      stylesheets="@../css/main.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Actions Row -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Nouveau Contrat" styleClass="btn-primary" onAction="#handleNouveauContrat"/>
+    </HBox>
+
+    <!-- Filtres -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="filter-section">
+        <Label text="Filtrer par:" styleClass="filter-label"/>
+        <ComboBox fx:id="filterStatut" promptText="Statut" prefWidth="150"/>
+        <ComboBox fx:id="filterType" promptText="Type de contrat" prefWidth="150"/>
+        <TextField fx:id="filterEmploye" promptText="Rechercher employé..." prefWidth="200"/>
+        <CheckBox fx:id="alerteExpiration" text="Alerte expiration (30 jours)"/>
+        <Button text="Rechercher" styleClass="btn-secondary" onAction="#handleRechercher"/>
+        <Button text="Réinitialiser" styleClass="btn-secondary" onAction="#handleResetFilters"/>
+    </HBox>
+
+    <!-- Tableau des contrats -->
+    <TableView fx:id="contratsTable" VBox.vgrow="ALWAYS" styleClass="data-table">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+            <TableColumn fx:id="colEmploye" text="Employé" prefWidth="150"/>
+            <TableColumn fx:id="colType" text="Type" prefWidth="100"/>
+            <TableColumn fx:id="colDateDebut" text="Date Début" prefWidth="120"/>
+            <TableColumn fx:id="colDateFin" text="Date Fin" prefWidth="120"/>
+            <TableColumn fx:id="colSalaire" text="Salaire" prefWidth="100"/>
+            <TableColumn fx:id="colPoste" text="Poste" prefWidth="120"/>
+            <TableColumn fx:id="colDepartement" text="Département" prefWidth="120"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+            <TableColumn fx:id="colActions" text="Actions" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <!-- Actions groupées -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Exporter CSV" styleClass="btn-secondary" onAction="#handleExporterCSV"/>
+        <Button text="Alertes Expiration" styleClass="btn-warning" onAction="#handleAlertesExpiration"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblTotalContrats" text="Total: 0 contrats" styleClass="total-label"/>
+    </HBox>
+
+</VBox>
