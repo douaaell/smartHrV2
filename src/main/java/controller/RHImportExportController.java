@@ -119,7 +119,7 @@ public class RHImportExportController {
                     showAlert("Importation terminée",
                             finalSuccess + " employés importés avec succès.\n" + finalErrors + " erreurs.",
                             Alert.AlertType.INFORMATION);
-                    addHistoryItem(file.getName(), "Import", finalSuccess);
+                    addHistoryItem(file, "Import", finalSuccess);
                 });
 
             } catch (IOException e) {
@@ -183,7 +183,7 @@ public class RHImportExportController {
                 javafx.application.Platform.runLater(() -> {
                     showAlert("Export réussi", "Les données ont été exportées vers " + file.getName(),
                             Alert.AlertType.INFORMATION);
-                    addHistoryItem(file.getName(), "Export", filtered.size());
+                    addHistoryItem(file, "Export", filtered.size());
                 });
 
             } catch (Exception e) {
@@ -193,7 +193,7 @@ public class RHImportExportController {
         });
     }
 
-    private void addHistoryItem(String filename, String type, int count) {
+    private void addHistoryItem(java.io.File file, String type, int count) {
         javafx.application.Platform.runLater(() -> {
             javafx.scene.layout.HBox item = new javafx.scene.layout.HBox(15);
             item.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -211,7 +211,7 @@ public class RHImportExportController {
 
             // Infos fichier
             javafx.scene.layout.VBox info = new javafx.scene.layout.VBox(2);
-            Label lblFile = new Label(filename);
+            Label lblFile = new Label(file.getName());
             lblFile.setStyle("-fx-font-weight: bold; -fx-text-fill: #374151; -fx-font-size: 14px;");
             Label lblDetails = new Label(
                     java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + " • "
@@ -238,6 +238,26 @@ public class RHImportExportController {
             if (type.equalsIgnoreCase("Export")) {
                 Hyperlink downloadLink = new Hyperlink("📥 Télécharger");
                 downloadLink.setStyle("-fx-text-fill: #2563EB; -fx-font-size: 12px; -fx-underline: false;");
+
+                downloadLink.setOnAction(e -> {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setTitle("Enregistrer une copie du CSV");
+                    fileChooser.setInitialFileName(file.getName());
+                    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv"));
+                    java.io.File target = fileChooser.showSaveDialog(null);
+                    if (target != null) {
+                        try {
+                            java.nio.file.Files.copy(file.toPath(), target.toPath(),
+                                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                            showAlert("Succès", "Le fichier a été enregistré sous : " + target.getAbsolutePath(),
+                                    Alert.AlertType.INFORMATION);
+                        } catch (java.io.IOException ex) {
+                            showAlert("Erreur", "Impossible de copier le fichier : " + ex.getMessage(),
+                                    Alert.AlertType.ERROR);
+                        }
+                    }
+                });
+
                 item.getChildren().add(downloadLink);
             }
 

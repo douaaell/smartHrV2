@@ -22,27 +22,29 @@
             </VBox>
             
             <!-- Navigation -->
-            <VBox spacing="5" styleClass="nav-menu">
-                <Button fx:id="dashboardBtn" text="Tableau de bord" styleClass="sidebar-btn" onAction="#handleDashboard"/>
-                <Button fx:id="employesBtn" text="Employés" styleClass="sidebar-btn" onAction="#ouvrirEmployes"/>
-                <Button fx:id="contratsBtn" text="Contrats" styleClass="sidebar-btn" onAction="#handleContrats"/>
-                <Button fx:id="congesBtn" text="Congés" styleClass="sidebar-btn" onAction="#handleConges"/>
-                <Button fx:id="justificatifsBtn" text="Justificatifs" styleClass="sidebar-btn" onAction="#handleJustificatifs"/>
-                <Button fx:id="importExportBtn" text="Import / Export" styleClass="sidebar-btn" onAction="#handleImportExport"/>
-
-            </VBox>
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS" style="-fx-background: white; -fx-background-color: white;">
+                <VBox spacing="5" styleClass="nav-menu">
+                    <Button fx:id="dashboardBtn" text="Tableau de bord" styleClass="sidebar-btn" onAction="#handleDashboard"/>
+                    <Button fx:id="employesBtn" text="Employés" styleClass="sidebar-btn" onAction="#ouvrirEmployes"/>
+                    <Button fx:id="contratsBtn" text="Contrats" styleClass="sidebar-btn" onAction="#handleContrats"/>
+                    <Button fx:id="congesBtn" text="Congés" styleClass="sidebar-btn" onAction="#handleConges"/>
+                    <Button fx:id="justificatifsBtn" text="Justificatifs" styleClass="sidebar-btn" onAction="#handleJustificatifs"/>
+                    <Button fx:id="importExportBtn" text="Import / Export" styleClass="sidebar-btn" onAction="#handleImportExport"/>
+                </VBox>
+            </ScrollPane>
             
-            <!-- Spacer -->
-            <Region VBox.vgrow="ALWAYS"/>
+            <Separator style="-fx-padding: 10 20 0 20;"/>
             
-            <!-- User Info (Same style as employee) -->
-            <VBox spacing="5" style="-fx-padding: 20;" alignment="TOP_LEFT">
-                <Label fx:id="lblAdminName" text="Administrateur RH" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+            <!-- User Info (Fixed at bottom) -->
+            <VBox spacing="5" style="-fx-padding: 15 20 5 20;" alignment="TOP_LEFT">
+                <Label fx:id="lblAdminName" text="Administrateur RH" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
                 <Label fx:id="lblAdminEmail" text="rh@smarthr.com" style="-fx-text-fill: gray; -fx-font-size: 11px;"/>
             </VBox>
             
             <!-- Déconnexion -->
-            <Button text="Déconnexion" styleClass="sidebar-btn" style="-fx-text-fill: #dc2626; -fx-background-color: transparent;" onAction="#handleLogout"/>
+            <Button text="Déconnexion" styleClass="sidebar-btn" 
+                    style="-fx-text-fill: #dc2626; -fx-background-color: transparent; -fx-padding: 10 20 20 20;" 
+                    onAction="#handleLogout"/>
         </VBox>
     </left>
 
