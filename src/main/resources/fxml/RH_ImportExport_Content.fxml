@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Rectangle?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controller.RHImportExportController"
+      spacing="25" styleClass="main-content" stylesheets="@../css/main.css">
+
+    <padding>
+        <Insets top="30" right="40" bottom="30" left="40"/>
+    </padding>
+
+    <!-- Header -->
+    <VBox spacing="5" style="-fx-padding: 0 0 10 0;">
+        <Label text="Import/Export CSV" styleClass="header-title" style="-fx-font-size: 24px;"/>
+        <Label text="Importer ou exporter des données d'employés en CSV" styleClass="header-subtitle"/>
+    </VBox>
+
+    <HBox spacing="30">
+        <!-- Section Import -->
+        <VBox styleClass="recent-section" HBox.hgrow="ALWAYS" spacing="20" prefWidth="500">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <StackPane style="-fx-background-color: #EBF5FF; -fx-background-radius: 8; -fx-padding: 10;">
+                    <Label text="📤" style="-fx-font-size: 20px;"/>
+                </StackPane>
+                <Label text="Importer des données" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+            </HBox>
+            
+            <Label text="Importez un fichier CSV contenant les informations des employés. Le traitement se fera en parallèle pour optimiser les performances." 
+                   wrapText="true" style="-fx-text-fill: #6b7280;"/>
+
+            <VBox fx:id="dropZone" spacing="15" alignment="CENTER" onMouseClicked="#handlePickFile"
+                  style="-fx-border-color: #D1D5DB; -fx-border-width: 2; -fx-border-style: dashed; -fx-border-radius: 12; -fx-padding: 40; -fx-cursor: hand; -fx-background-color: #F9FAFB; -fx-background-radius: 12;">
+                <Label text="📄" style="-fx-font-size: 40px; -fx-text-fill: #D1D5DB;"/>
+                <Label text="Cliquez pour sélectionner un fichier CSV" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                <Label text="ou glissez-déposez votre fichier ici" style="-fx-text-fill: #6b7280;"/>
+            </VBox>
+
+            <VBox spacing="10" style="-fx-background-color: #F0F7FF; -fx-padding: 15; -fx-background-radius: 10; -fx-border-color: #BFDBFE; -fx-border-width: 1; -fx-border-radius: 10;">
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="📋" style="-fx-font-size: 14px;"/>
+                    <Label text="Format attendu du CSV :" style="-fx-font-weight: bold; -fx-text-fill: #1E40AF; -fx-font-size: 13px;"/>
+                </HBox>
+                <Label fx:id="lblFormatCsv" text="nom,prenom,email,telephone,adresse,departement,poste,type_contrat,date_debut,salaire" 
+                       style="-fx-font-family: 'Courier New'; -fx-text-fill: #2563EB; -fx-font-size: 12px; -fx-background-color: white; -fx-padding: 8; -fx-background-radius: 5;"
+                       maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+
+        <!-- Section Export -->
+        <VBox styleClass="recent-section" HBox.hgrow="ALWAYS" spacing="20" prefWidth="500">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <StackPane style="-fx-background-color: #F0FDF4; -fx-background-radius: 8; -fx-padding: 10;">
+                    <Label text="📥" style="-fx-font-size: 20px;"/>
+                </StackPane>
+                <Label text="Exporter des données" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+            </HBox>
+
+            <Label text="Exportez les données des employés au format CSV. Sélectionnez les critères d'export ci-dessous." 
+                   wrapText="true" style="-fx-text-fill: #6b7280;"/>
+
+            <VBox spacing="15">
+                <VBox spacing="5">
+                    <Label text="Type de contrat" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                    <ComboBox fx:id="exportTypeCombo" maxWidth="Infinity" styleClass="combo-box"/>
+                </VBox>
+                
+                <VBox spacing="5">
+                    <Label text="Département" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                    <ComboBox fx:id="exportDeptCombo" maxWidth="Infinity" styleClass="combo-box"/>
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Statut" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                    <ComboBox fx:id="exportStatutCombo" maxWidth="Infinity" styleClass="combo-box"/>
+                </VBox>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button fx:id="btnExport" text="📥 Générer et télécharger CSV" maxWidth="Infinity" onAction="#handleExport"
+                    style="-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Info Banner -->
+    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: #F5F3FF; -fx-padding: 20; -fx-background-radius: 12; -fx-border-color: #DDD6FE; -fx-border-width: 1; -fx-border-radius: 12;">
+        <StackPane style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 10;">
+            <Label text="⚡" style="-fx-font-size: 20px;"/>
+        </StackPane>
+        <VBox spacing="3" HBox.hgrow="ALWAYS">
+            <Label text="Traitement parallèle optimisé" style="-fx-font-weight: bold; -fx-text-fill: #5B21B6; -fx-font-size: 15px;"/>
+            <Label text="L'import et l'export de fichiers CSV utilisent le traitement parallèle avec ExecutorService pour maximiser les performances. La synchronisation garantit la cohérence des données lors des opérations concurrentes." 
+                   wrapText="true" style="-fx-text-fill: #6D28D9; -fx-font-size: 12px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Historique Section -->
+    <VBox spacing="15">
+        <Label text="Historique des opérations" styleClass="section-title"/>
+        <VBox fx:id="historyList" spacing="10">
+            <!-- Items loaded dynamically -->
+            <Label text="Aucune opération récente" style="-fx-text-fill: #9ca3af; -fx-font-style: italic;"/>
+        </VBox>
+    </VBox>
+
+</VBox>

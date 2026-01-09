@@ -69,22 +69,7 @@ public class ContratDAO {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                Date startDate = rs.getDate("start_date");
-                Date endDate = rs.getDate("end_date");
-
-                Contrat c = new Contrat(
-                        rs.getString("id"),
-                        rs.getString("employee_email"),
-                        rs.getString("type"),
-                        startDate != null ? startDate.toLocalDate() : null,
-                        endDate != null ? endDate.toLocalDate() : null,
-                        rs.getDouble("salary"),
-                        rs.getString("position"),
-                        rs.getString("department"),
-                        rs.getString("benefits"),
-                        rs.getString("status"),
-                        rs.getString("file_name_pdf"));
-                list.add(c);
+                list.add(extractContratFromResultSet(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,26 +85,44 @@ public class ContratDAO {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Date startDate = rs.getDate("start_date");
-                Date endDate = rs.getDate("end_date");
-
-                Contrat c = new Contrat(
-                        rs.getString("id"),
-                        rs.getString("employee_email"),
-                        rs.getString("type"),
-                        startDate != null ? startDate.toLocalDate() : null,
-                        endDate != null ? endDate.toLocalDate() : null,
-                        rs.getDouble("salary"),
-                        rs.getString("position"),
-                        rs.getString("department"),
-                        rs.getString("benefits"),
-                        rs.getString("status"),
-                        rs.getString("file_name_pdf"));
-                list.add(c);
+                list.add(extractContratFromResultSet(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public Contrat findContratActifByEmail(String email) {
+        String sql = "SELECT * FROM contrat WHERE employee_email=? AND status='Actif'";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return extractContratFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Contrat extractContratFromResultSet(ResultSet rs) throws SQLException {
+        Date startDate = rs.getDate("start_date");
+        Date endDate = rs.getDate("end_date");
+
+        return new Contrat(
+                rs.getString("id"),
+                rs.getString("employee_email"),
+                rs.getString("type"),
+                startDate != null ? startDate.toLocalDate() : null,
+                endDate != null ? endDate.toLocalDate() : null,
+                rs.getDouble("salary"),
+                rs.getString("position"),
+                rs.getString("department"),
+                rs.getString("benefits"),
+                rs.getString("status"),
+                rs.getString("file_name_pdf"));
     }
 }

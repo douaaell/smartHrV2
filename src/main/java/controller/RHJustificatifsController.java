@@ -52,7 +52,13 @@ public class RHJustificatifsController {
 
     @FXML
     public void initialize() {
+        // Initialize the list early to avoid null pointers in listeners
+        allDocuments = FXCollections.observableArrayList();
+
+        setupTableColumns();
+
         // Initialize filter combo
+        comboStatutFilter.getItems().clear();
         comboStatutFilter.getItems().addAll("Tous", "En attente", "Validé", "Refusé");
         comboStatutFilter.getSelectionModel().selectFirst();
 
@@ -63,41 +69,7 @@ public class RHJustificatifsController {
         loadAllDocuments();
     }
 
-    private void loadAllDocuments() {
-        // Get all employes and their documents
-        List<Employe> employes = employeService.listerEmployes();
-        allDocuments = FXCollections.observableArrayList();
-
-        for (Employe emp : employes) {
-            List<Document> docs = documentService.findDocumentsByEmployeeEmail(emp.getEmail());
-            for (Document doc : docs) {
-                allDocuments.add(new DocumentWithEmployee(doc, emp));
-            }
-        }
-
-        updateStats();
-        displayDocuments(allDocuments);
-    }
-
-    private void updateStats() {
-        long pending = allDocuments.stream()
-                .filter(d -> d.getDocument().getStatut() == Document.StatutDocument.EN_ATTENTE)
-                .count();
-        long validated = allDocuments.stream()
-                .filter(d -> d.getDocument().getStatut() == Document.StatutDocument.VALIDE)
-                .count();
-        long refused = allDocuments.stream()
-                .filter(d -> d.getDocument().getStatut() == Document.StatutDocument.REFUSE)
-                .count();
-
-        lblEnAttente.setText(String.valueOf(pending));
-        lblValides.setText(String.valueOf(validated));
-        lblRefuses.setText(String.valueOf(refused));
-    }
-
-    private void displayDocuments(ObservableList<DocumentWithEmployee> documents) {
-        lblTableTitle.setText("Tous les justificatifs (" + documents.size() + ")");
-
+    private void setupTableColumns() {
         // Employe column
         colEmploye.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
                 cellData.getValue().getEmploye().getNom() + " " +
@@ -139,6 +111,7 @@ public class RHJustificatifsController {
             }
             return new javafx.beans.property.SimpleStringProperty("En attente");
         });
+
         colStatut.setCellFactory(column -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -214,7 +187,42 @@ public class RHJustificatifsController {
                 }
             }
         });
+    }
 
+    private void loadAllDocuments() {
+        // Get all employes and their documents
+        List<Employe> employes = employeService.listerEmployes();
+        allDocuments.clear();
+
+        for (Employe emp : employes) {
+            List<Document> docs = documentService.findDocumentsByEmployeeEmail(emp.getEmail());
+            for (Document doc : docs) {
+                allDocuments.add(new DocumentWithEmployee(doc, emp));
+            }
+        }
+
+        updateStats();
+        handleSearch(); // Keep active filter
+    }
+
+    private void updateStats() {
+        long pending = allDocuments.stream()
+                .filter(d -> d.getDocument().getStatut() == Document.StatutDocument.EN_ATTENTE)
+                .count();
+        long validated = allDocuments.stream()
+                .filter(d -> d.getDocument().getStatut() == Document.StatutDocument.VALIDE)
+                .count();
+        long refused = allDocuments.stream()
+                .filter(d -> d.getDocument().getStatut() == Document.StatutDocument.REFUSE)
+                .count();
+
+        lblEnAttente.setText(String.valueOf(pending));
+        lblValides.setText(String.valueOf(validated));
+        lblRefuses.setText(String.valueOf(refused));
+    }
+
+    private void displayDocuments(ObservableList<DocumentWithEmployee> documents) {
+        lblTableTitle.setText("Tous les justificatifs (" + documents.size() + ")");
         tableJustificatifs.setItems(documents);
     }
 
@@ -331,8 +339,14 @@ public class RHJustificatifsController {
 
         ObservableList<DocumentWithEmployee> filtered = allDocuments.stream()
                 .filter(d -> {
+                    String fullName = (d.getEmploye().getNom() + " " + d.getEmploye().getPrenom()).toLowerCase();
+                    String nom = d.getEmploye().getNom().toLowerCase();
+                    String prenom = d.getEmploye().getPrenom().toLowerCase();
+
                     boolean matchesSearch = search.isEmpty() ||
-                            (d.getEmploye().getNom() + " " + d.getEmploye().getPrenom()).toLowerCase().contains(search);
+                            fullName.contains(search) ||
+                            nom.contains(search) ||
+                            prenom.contains(search);
 
                     boolean matchesStatut = statutFilter.equals("Tous") ||
                             (d.getDocument().getStatut() != null &&

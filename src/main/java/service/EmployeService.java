@@ -70,26 +70,15 @@ public class EmployeService {
 
     // 👇 Streams = thread-safe ici car liste locale
     public List<Employe> rechercherParNom(String nom) {
-        return dao.getAllEmployes()
-                .stream()
-                .filter(e -> e.getNom().equalsIgnoreCase(nom))
-                .collect(Collectors.toList());
+        return dao.findEmployeByNom(nom);
     }
 
     public Employe findEmployeeById(int id) {
-        return dao.getAllEmployes()
-                .stream()
-                .filter(e -> e.getId() == id)
-                .findFirst()
-                .orElse(null);
+        return dao.findEmployeeById(id);
     }
 
     public Employe findEmployeeByEmail(String email) {
-        return dao.getAllEmployes()
-                .stream()
-                .filter(e -> e.getEmail().equalsIgnoreCase(email))
-                .findFirst()
-                .orElse(null);
+        return dao.findEmployeeByEmail(email);
     }
 
     // Fermeture propre du pool

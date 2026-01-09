@@ -28,7 +28,8 @@
                 <Button fx:id="contratsBtn" text="Contrats" styleClass="sidebar-btn" onAction="#handleContrats"/>
                 <Button fx:id="congesBtn" text="Congés" styleClass="sidebar-btn" onAction="#handleConges"/>
                 <Button fx:id="justificatifsBtn" text="Justificatifs" styleClass="sidebar-btn" onAction="#handleJustificatifs"/>
-                <Button fx:id="importExportBtn" text="Import/Export" styleClass="sidebar-btn" onAction="#handleImportExport"/>
+                <Button fx:id="importExportBtn" text="Import / Export" styleClass="sidebar-btn" onAction="#handleImportExport"/>
+
             </VBox>
             
             <!-- Spacer -->

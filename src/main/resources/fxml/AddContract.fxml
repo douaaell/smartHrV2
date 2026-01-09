@@ -61,7 +61,7 @@
 
                 <!-- Salaire -->
                 <VBox spacing="5">
-                    <Label text="Salaire annuel brut" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
+                    <Label text="Salaire annuel brut (DHS)" style="-fx-text-fill: #374151; -fx-font-weight: bold;"/>
                     <TextField fx:id="salaireField" promptText="Ex: 45000" 
                                style="-fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 10;"/>
                 </VBox>

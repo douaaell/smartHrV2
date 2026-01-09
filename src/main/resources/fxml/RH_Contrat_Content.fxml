@@ -40,7 +40,7 @@
             <TableColumn fx:id="colType" text="Type" prefWidth="100"/>
             <TableColumn fx:id="colDateDebut" text="Date Début" prefWidth="120"/>
             <TableColumn fx:id="colDateFin" text="Date Fin" prefWidth="120"/>
-            <TableColumn fx:id="colSalaire" text="Salaire" prefWidth="100"/>
+            <TableColumn fx:id="colSalaire" text="Salaire (DHS)" prefWidth="120"/>
             <TableColumn fx:id="colPoste" text="Poste" prefWidth="120"/>
             <TableColumn fx:id="colDepartement" text="Département" prefWidth="120"/>
             <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>

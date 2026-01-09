@@ -94,7 +94,7 @@
                         
                         <!-- Row 6: Salaire (Full Width) -->
                         <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2">
-                            <Label text="Salaire annuel brut (€) *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                            <Label text="Salaire annuel brut (DHS) *" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
                             <TextField fx:id="salaireField" promptText="0.00" style="-fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-padding: 8;"/>
                         </VBox>
 

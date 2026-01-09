@@ -70,7 +70,7 @@ public class EmpMonProfilController {
                 Contrat c = contrats.get(0);
                 lblContratType.setText(c.getType());
                 lblDateEmbauche.setText(c.getStartDate().toString());
-                lblSalaire.setText(c.getSalary() + " €");
+                lblSalaire.setText(String.format("%.2f DHS", c.getSalary()));
             } else {
                 lblContratType.setText("-");
                 lblDateEmbauche.setText("-");
@@ -168,41 +168,21 @@ public class EmpMonProfilController {
     }
 
     @FXML
-    public void handleEditProfile() {
-        openModal("/fxml/EditEmployee.fxml", "Modifier mon profil", true);
-    }
-
-    @FXML
     public void handleDemandeConge() {
-        openModal("/fxml/DemandeConge.fxml", "Nouvelle demande de congé", false);
+        openModal("/fxml/DemandeConge.fxml", "Nouvelle demande de congé");
     }
 
     @FXML
     public void handleJustifierAbsence() {
-        openModal("/fxml/AjouterJustificatif.fxml", "Ajouter un justificatif", false);
+        openModal("/fxml/AjouterJustificatif.fxml", "Ajouter un justificatif");
     }
 
-    private void openModal(String fxmlPath, String title, boolean isEditProfile) {
+    private void openModal(String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-
-            if (isEditProfile) {
-                EmployeController controller = new EmployeController();
-                loader.setController(controller);
-                Parent root = loader.load();
-
-                Employe currentEmp = EmployeeDashboardController.getCurrentEmploye();
-                if (currentEmp != null) {
-                    controller.setEmployeForEdit(currentEmp);
-                    showStage(root, title);
-                    initialize();
-                }
-            } else {
-                Parent root = loader.load();
-                showStage(root, title);
-                initialize();
-            }
-
+            Parent root = loader.load();
+            showStage(root, title);
+            initialize();
         } catch (IOException e) {
             e.printStackTrace();
         }

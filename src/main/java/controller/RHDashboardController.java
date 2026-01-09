@@ -608,23 +608,17 @@ public class RHDashboardController {
             setActiveButton(importExportBtn);
 
             if (lblPageTitle != null)
-                lblPageTitle.setText("Import / Export");
+                lblPageTitle.setText("Import / Export CSV");
             if (lblPageSubtitle != null)
-                lblPageSubtitle.setText("Synchronisation des données et rapports");
+                lblPageSubtitle.setText("Synchronisation et gestion des données massives");
 
-            // Create placeholder view
-            VBox content = new VBox(20);
-            content.getStyleClass().add("main-content");
-            content.setStyle("-fx-padding: 40; -fx-alignment: center;");
+            // Load Import/Export view
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/RH_ImportExport_Content.fxml"));
+            Parent importExportView = loader.load();
 
-            Label title = new Label("Import / Export des Données");
-            title.getStyleClass().add("header-title");
-
-            Label desc = new Label("Fonctionnalité en cours de développement.");
-            desc.getStyleClass().add("header-subtitle");
-
-            content.getChildren().addAll(title, desc);
-            mainContentArea.setCenter(content);
+            // Replace content
+            mainContentArea.setCenter(importExportView);
 
             System.out.println("✅ Vue Import/Export affichée");
 

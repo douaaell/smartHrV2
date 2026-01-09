@@ -75,7 +75,7 @@
         <Region HBox.hgrow="ALWAYS"/>
         
         <Button text="📥 Exporter CSV" styleClass="btn-secondary" onAction="#handleExporterCSV"/>
-        <Button text="+ Nouvelle demande" styleClass="btn-primary" onAction="#handleNouvelleDemande"/>
+
     </HBox>
 
     <!-- Tableau des congés -->

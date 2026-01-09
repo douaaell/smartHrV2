@@ -201,10 +201,14 @@ public class EmployeController {
                     badge.setStyle("-fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 11px;");
 
                     if ("Actif".equalsIgnoreCase(status)) {
-                        badge.setStyle(badge.getStyle() + "-fx-background-color: #DEF7EC; -fx-text-fill: #03543F;");
+                        badge.setStyle(badge.getStyle()
+                                + "-fx-background-color: #DEF7EC; -fx-text-fill: #03543F; -fx-cursor: hand;");
                     } else {
-                        badge.setStyle(badge.getStyle() + "-fx-background-color: #FDE2E1; -fx-text-fill: #9B1C1C;");
+                        badge.setStyle(badge.getStyle()
+                                + "-fx-background-color: #FDE2E1; -fx-text-fill: #9B1C1C; -fx-cursor: hand;");
                     }
+
+                    badge.setOnMouseClicked(event -> toggleEmployeeStatus(emp));
                     setGraphic(badge);
                 }
             }
@@ -255,6 +259,7 @@ public class EmployeController {
         List<Employe> employes = employeService.listerEmployes();
 
         // Charger les données de contrats
+        contratService.actualiserStatutsContrats();
         List<Contrat> contrats = contratService.listerContrats();
         employeContractTypeMap.clear();
         employeContractStatusMap.clear();
@@ -483,7 +488,7 @@ public class EmployeController {
                 if (c.getStartDate() != null) {
                     lblDateEmbauche.setText(c.getStartDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 }
-                lblSalaire.setText(NumberFormat.getCurrencyInstance(Locale.FRANCE).format(c.getSalary()));
+                lblSalaire.setText(String.format("%.2f DHS", c.getSalary()));
             } else {
                 lblTypeContrat.setText("-");
                 lblDateEmbauche.setText("-");
@@ -600,6 +605,25 @@ public class EmployeController {
         if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
             employeService.supprimerEmploye(employe.getId());
             chargerEmployes();
+        }
+    }
+
+    private void toggleEmployeeStatus(Employe emp) {
+        List<Contrat> contrats = contratService.filtrerParEmploye(emp.getEmail());
+        if (!contrats.isEmpty()) {
+            Contrat c = contrats.get(0);
+            String currentStatus = c.getStatus();
+            String newStatus = "Actif".equalsIgnoreCase(currentStatus) ? "Inactif" : "Actif";
+            c.setStatus(newStatus);
+            contratService.modifierContrat(c);
+
+            // Mise à jour immédiate de l'interface
+            employeContractStatusMap.put(emp.getEmail(), newStatus);
+            tableEmployes.refresh();
+
+            System.out.println("🔄 Statut de l'employé " + emp.getNom() + " changé en : " + newStatus);
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Attention", "Cet employé n'a pas de contrat associé.");
         }
     }
 

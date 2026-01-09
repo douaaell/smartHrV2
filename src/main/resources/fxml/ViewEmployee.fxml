@@ -81,7 +81,7 @@
                     <!-- Salaire annuel -->
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4">
                         <Label text="Salaire annuel" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
-                        <Label fx:id="lblSalaire" text="55000 €" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                        <Label fx:id="lblSalaire" text="55000 DHS" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
                     </VBox>
 
                     <!-- Rôle -->

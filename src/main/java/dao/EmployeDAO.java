@@ -86,44 +86,7 @@ public class EmployeDAO {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                // Handle potential missing columns gracefully for display if DB isn't updated
-                // yet?
-                // No, standard path.
-                String telephone = "";
-                String adresse = "";
-                try {
-                    telephone = rs.getString("telephone");
-                } catch (SQLException ignore) {
-                }
-                try {
-                    adresse = rs.getString("adresse");
-                } catch (SQLException ignore) {
-                }
-
-                Employe e = new Employe(
-                        rs.getInt("id"),
-                        rs.getString("nom"),
-                        rs.getString("prenom"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("departement"),
-                        rs.getString("position"),
-                        telephone,
-                        adresse);
-
-                // Récupérer et définir le rôle explicitement
-                String role = null;
-                try {
-                    role = rs.getString("role");
-                } catch (SQLException ignore) {
-                }
-                if (role != null) {
-                    e.setRole(role);
-                } else {
-                    e.setRole("EMPLOYE"); // Valeur par défaut
-                }
-
-                list.add(e);
+                list.add(extractEmployeFromResultSet(rs));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -140,31 +103,82 @@ public class EmployeDAO {
             stmt.setString(1, "%" + nom + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                String telephone = "";
-                String adresse = "";
-                try {
-                    telephone = rs.getString("telephone");
-                } catch (SQLException ignore) {
-                }
-                try {
-                    adresse = rs.getString("adresse");
-                } catch (SQLException ignore) {
-                }
-
-                list.add(new Employe(
-                        rs.getInt("id"),
-                        rs.getString("nom"),
-                        rs.getString("prenom"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("departement"),
-                        rs.getString("position"),
-                        telephone,
-                        adresse));
+                list.add(extractEmployeFromResultSet(rs));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return list;
     }
+
+    // Rechercher par ID
+    public Employe findEmployeeById(int id) {
+        String sql = "SELECT * FROM employe WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return extractEmployeFromResultSet(rs);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    // Rechercher par Email
+    public Employe findEmployeeByEmail(String email) {
+        String sql = "SELECT * FROM employe WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return extractEmployeFromResultSet(rs);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    // Helper pour extraire un employé d'un ResultSet
+    private Employe extractEmployeFromResultSet(ResultSet rs) throws SQLException {
+        String telephone = "";
+        String adresse = "";
+        try {
+            telephone = rs.getString("telephone");
+        } catch (SQLException ignore) {
+        }
+        try {
+            adresse = rs.getString("adresse");
+        } catch (SQLException ignore) {
+        }
+
+        Employe e = new Employe(
+                rs.getInt("id"),
+                rs.getString("nom"),
+                rs.getString("prenom"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getString("departement"),
+                rs.getString("position"),
+                telephone,
+                adresse);
+
+        String role = null;
+        try {
+            role = rs.getString("role");
+        } catch (SQLException ignore) {
+        }
+        if (role != null) {
+            e.setRole(role);
+        } else {
+            e.setRole("EMPLOYE");
+        }
+
+        return e;
+    }
 }
+

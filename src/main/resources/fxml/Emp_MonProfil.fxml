@@ -25,7 +25,6 @@
                     <Label fx:id="lblDepartement" text="Développement" styleClass="info-text"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Modifier" styleClass="primary-btn" onAction="#handleEditProfile"/>
             </HBox>
 
             <HBox spacing="30">
@@ -58,7 +57,7 @@
 
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
                     <Label text="Salaire annuel brut" styleClass="field-label"/>
-                    <Label fx:id="lblSalaire" text="55 000 €" styleClass="field-value"/>
+                    <Label fx:id="lblSalaire" text="55 000 DHS" styleClass="field-value"/>
                 </VBox>
             </HBox>
         </VBox>
@@ -85,7 +84,6 @@
                 <Label text="Actions rapides" styleClass="card-header"/>
                 <Button text="🏖 Demander un congé" maxWidth="Infinity" styleClass="secondary-btn" onAction="#handleDemandeConge"/>
                 <Button text="📄 Justifier une absence" maxWidth="Infinity" styleClass="secondary-btn" style="-fx-background-color: #F0FFF4; -fx-text-fill: #188038;" onAction="#handleJustifierAbsence"/>
-                <Button text="✏ Modifier mes infos" maxWidth="Infinity" styleClass="secondary-btn" style="-fx-background-color: #F3F0FF; -fx-text-fill: #7C3AED;" onAction="#handleEditProfile"/>
             </VBox>
         </VBox>
     </HBox>

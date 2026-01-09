@@ -100,6 +100,7 @@ public class RHContratController {
         if (contratsTable != null) {
             setupTableColumns();
             setupFilters();
+            contratService.actualiserStatutsContrats(); // Mettre à jour les expirations
             loadContrats();
         }
 
@@ -181,9 +182,11 @@ public class RHContratController {
             closeWindow();
 
         } catch (NumberFormatException e) {
-            showAlert("Erreur", "Le salaire doit être un nombre valide.", Alert.AlertType.ERROR);
+            showAlert("Erreur", "Le salaire doit être un nombre valide (ex: 45000.00).", Alert.AlertType.ERROR);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            showAlert("Règle métier", e.getMessage(), Alert.AlertType.WARNING);
         } catch (Exception e) {
-            showAlert("Erreur", e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Erreur", "Impossible de créer le contrat : " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -241,6 +244,17 @@ public class RHContratController {
                         : ""));
 
         colSalaire.setCellValueFactory(new PropertyValueFactory<>("salary"));
+        colSalaire.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f DHS", item));
+                }
+            }
+        });
         colPoste.setCellValueFactory(new PropertyValueFactory<>("position"));
         colDepartement.setCellValueFactory(new PropertyValueFactory<>("department"));
         colStatut.setCellValueFactory(new PropertyValueFactory<>("status"));

@@ -207,24 +207,6 @@ public class RHCongeController {
     }
 
     @FXML
-    public void handleNouvelleDemande() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DemandeConge.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Nouvelle Demande de Congé");
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-
-            // Refresh table after closing form
-            loadConges();
-        } catch (Exception e) {
-            showAlert("Erreur", "Impossible d'ouvrir le formulaire: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
     public void handleFilterChange() {
         handleRechercher();
     }
